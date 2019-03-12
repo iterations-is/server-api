@@ -1,0 +1,21 @@
+{
+  "name": "iterations-server-api",
+  "version": "0.0.0",
+  "author": {
+    "name": "Sergey Dunaevskiy",
+    "email": "sergey@dunaevskiy.eu",
+    "url": "https://dunaevskiy.eu/"
+  },
+  "main": "index.js",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^4.16.4",
+    "jsonwebtoken": "^8.5.0",
+    "prettier": "^1.16.4",
+    "winston": "^3.2.1"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  }
+}
