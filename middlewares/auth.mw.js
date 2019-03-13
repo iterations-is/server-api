@@ -7,7 +7,13 @@ const jwt = require('jsonwebtoken');
 const configJWT = require('../config/jwt.config');
 
 // Data
-const authFreeRoutes = ['/api/login'];
+const authFreeRoutes = [
+   '/api/login',
+   '/api/login/service/github',
+   '/api/login/service/github/callback',
+   '/api/login/fail',
+   '/api/login/succ',
+];
 
 module.exports = (req, res, next) => {
    // Skip auth validation if current request is auth free
