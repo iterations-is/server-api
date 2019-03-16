@@ -5,5 +5,5 @@
 Set configuration files at `./config`. E.g.:
 
 ```bash
-cp ./config/server.config.example.json ./config/server.config.json
+cp ./config/server.config.example.js ./config/server.config.js
 ```
