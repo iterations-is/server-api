@@ -1,6 +1,6 @@
 /**
- * @file Middleware for CORS. Allow different origins.
- * @author Sergey Dunaevskiy
+ * @file Middleware for CORS
+ * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
 module.exports = (req, res, next) => {
