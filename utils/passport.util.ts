@@ -3,6 +3,7 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
+export {};
 const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const User = require('models/UserModel');
