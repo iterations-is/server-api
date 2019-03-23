@@ -7,10 +7,10 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 
-const configServer = require('config/server.config');
+import configServer from '@config/server.config';
 
-const utilRedis = require('utils/redis.util');
-const utilValidator = require('utils/validator.util');
+const utilRedis = require('@utils/redis.util');
+const utilValidator = require('@utils/validator.util');
 
 /**
  * URL redirects to github oauth server
@@ -21,7 +21,7 @@ router.get(
       const tokenTmp = req.query.tokenTmp;
 
       // We need to have a temporary token to send a persistent token (it will be used at callback)
-      if (!utilValidator.isTokenTmp(tokenTmp))
+      if (!utilValidator.validateTokenTemporary(tokenTmp))
          return res.send('Authorization failed. No temporary token.');
 
       // Save temp token into user session
@@ -49,7 +49,7 @@ router.get(
       req.session = null;
 
       // Validate temporary token
-      if (!utilValidator.isTokenTmp(tokenTmp))
+      if (!utilValidator.validateTokenTemporary(tokenTmp))
          return res.send('Sorry, no temporary token provided.');
 
       // Create permanent token and save it to db

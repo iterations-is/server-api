@@ -11,3 +11,12 @@ services:
       command: redis-server --requirepass RedisPassword
       ports:
          - '6379:6379'
+
+   postgres:
+      image: postgres:alpine
+      ports:
+         - '5432:5432'
+      environment:
+         POSTGRES_USER: iterations
+         POSTGRES_PASSWORD: pass
+         POSTGRES_DB: iterations

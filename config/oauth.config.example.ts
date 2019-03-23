@@ -1,4 +1,4 @@
-module.exports = {
+export default {
    github: {
       // OAuth Details
       callback: '...',

@@ -3,13 +3,14 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
+export {};
 const crypto = require('crypto');
 const express = require('express');
 const router = express.Router();
 
-const utilRedis = require('utils/redis.util');
-const utilResponse = require('utils/response.util');
-const utilValidator = require('utils/validator.util');
+const utilRedis = require('@utils/redis.util');
+import { genResponseErrorSimple, genResponseSuccessData, genResponseSuccessSimple } from "@utils/response.util";
+const utilValidator = require('@utils/validator.util');
 
 /**
  * Get temporary token
@@ -27,7 +28,7 @@ router.get('/token/temporary', async (req, res) => {
    }
 
    res.json(
-      utilResponse.genSucDat('Temporary token', {
+      genResponseSuccessData('Temporary token', {
          tokenTmp: tokenTmp,
       }),
    );
@@ -42,13 +43,13 @@ router.get('/token/persistent', async (req, res) => {
    const tokenTmp = req.query.tokenTmp;
 
    // Validate temporary token
-   if (!utilValidator.isTokenTmp(tokenTmp))
-      return res.json(utilResponse.genErrSim('Authorization failed. No temporary token;'));
+   if (!utilValidator.validateTokenTemporary(tokenTmp))
+      return res.json(genResponseErrorSimple('Authorization failed. No temporary token;'));
 
    // Create JWT token with the temporary token as a key
    await utilRedis.redisClientAsync.get(tokenTmp).then(token => {
       res.json(
-         utilResponse.genSucDat('Persistent JWT token', {
+         genResponseSuccessData('Persistent JWT token', {
             token: token,
          }),
       );
@@ -61,7 +62,7 @@ router.get('/token/persistent', async (req, res) => {
  * If token is valid - send 200. Otherwise auth middleware sends 401.
  */
 router.get('/token/verify', async (req, res) => {
-   res.json(utilResponse.genSucSim('JWT is valid.'));
+   res.json(genResponseSuccessSimple('JWT is valid.'));
 });
 
 module.exports = router;

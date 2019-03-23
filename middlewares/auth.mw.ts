@@ -3,9 +3,10 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
+
 const jwt = require('jsonwebtoken');
-const configJWT = require('config/jwt.config');
-const utilResponse = require('utils/response.util');
+import configJWT from '@config/jwt.config';
+import { genResponseErrorData } from "@utils/response.util";
 
 // Data
 const authFreeRoutes = [
@@ -35,7 +36,7 @@ module.exports = (req, res, next) => {
    } catch (err) {
       // JWT is missing OR expired OR unexpected error
       return res.status(401).json(
-         utilResponse.genErrDat('Unauthorized', {
+         genResponseErrorData('Unauthorized', {
             reason: err.message,
          }),
       );

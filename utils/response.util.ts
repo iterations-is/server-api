@@ -3,12 +3,13 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-const responseTypes = {
+/**
+ * Default response types
+ */
+export const responseTypes = {
    error: 'error',
    success: 'success',
 };
-
-module.exports.responseTypes = responseTypes;
 
 // -------------------------------------------------------------------------------------------------
 // Custom
@@ -16,11 +17,10 @@ module.exports.responseTypes = responseTypes;
 
 /**
  * Generate custom simple response
- * @param {string} type One of responseTypes
- * @param {string} message Response description
- * @returns {{msg: string, typ: string}}
+ * @param type One of responseTypes
+ * @param message Response description
  */
-module.exports.genCusSim = (type, message) => {
+export const genResponseCustomSimple = (type: string, message: string): object => {
    return {
       typ: type,
       msg: message,
@@ -33,10 +33,9 @@ module.exports.genCusSim = (type, message) => {
 
 /**
  * Generate success simple response
- * @param {string} message Success description
- * @returns {{msg: string, typ: string}}
+ * @param message Success description
  */
-module.exports.genSucSim = message => {
+export const genResponseSuccessSimple = (message: string): object => {
    return {
       typ: responseTypes.success,
       msg: message,
@@ -45,11 +44,10 @@ module.exports.genSucSim = message => {
 
 /**
  * Generate success response with data
- * @param {string} message Success description
- * @param {object} data Data to send
- * @returns {{msg: string, dat: object, typ: string}}
+ * @param message Success description
+ * @param data Data to send
  */
-module.exports.genSucDat = (message, data) => {
+export const genResponseSuccessData = (message: string, data: object): object => {
    return {
       typ: responseTypes.success,
       msg: message,
@@ -63,10 +61,9 @@ module.exports.genSucDat = (message, data) => {
 
 /**
  * Generate error simple response
- * @param {string} message Error description
- * @returns {{msg: string, typ: string}}
+ * @param message Error description
  */
-module.exports.genErrSim = message => {
+export const genResponseErrorSimple = (message: string): object => {
    return {
       typ: responseTypes.error,
       msg: message,
@@ -75,11 +72,10 @@ module.exports.genErrSim = message => {
 
 /**
  * Generate error response with data
- * @param {string} message Error description
- * @param {object} data Data to send
- * @returns {{msg: string, dat: object, typ: string}}
+ * @param message Error description
+ * @param data Data to send
  */
-module.exports.genErrDat = (message, data) => {
+export const genResponseErrorData = (message: string, data: object): object => {
    return {
       typ: responseTypes.error,
       msg: message,

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
    // Secret string
    secret: '...',
    // Token expiration in seconds

@@ -5,9 +5,8 @@
 
 /**
  * Temporary token validation
- * @param {string} tokenTmp Temporary token
- * @returns {boolean}
+ * @param tokenTmp Temporary token
  */
-module.exports.isTokenTmp = tokenTmp => {
+export const validateTokenTemporary = (tokenTmp: string): boolean => {
    return tokenTmp && tokenTmp.length === 77;
 };
