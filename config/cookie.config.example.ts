@@ -1,4 +1,4 @@
-module.exports = {
+export default {
    // Keys
    // https://github.com/expressjs/cookie-session
    keys: ['...'],

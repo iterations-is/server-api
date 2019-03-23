@@ -3,16 +3,17 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
+export {};
 const express = require('express');
 const router = express.Router();
-const utilResponse = require('utils/response.util');
+import { genResponseSuccessSimple } from '@utils/response.util';
 
 router.get('/auth/with', (req, res) => {
-   res.json(utilResponse.genSucSim('Everything is ok, user is authorized.'));
+   res.json(genResponseSuccessSimple('Everything is ok, user is authorized.'));
 });
 
 router.get('/auth/without', (req, res) => {
-   res.json(utilResponse.genSucSim('Everything is ok, auth is not required.'));
+   res.json(genResponseSuccessSimple('Everything is ok, auth is not required.'));
 });
 
 module.exports = router;

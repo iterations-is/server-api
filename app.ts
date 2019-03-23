@@ -6,19 +6,17 @@
 // -------------------------------------------------------------------------------------------------
 // Dependencies
 // -------------------------------------------------------------------------------------------------
-// Alias manager
-require('module-alias/register');
 // Import external
 const express = require('express');
 const mongoose = require('mongoose');
 import { createConnection } from 'typeorm';
 const passport = require('passport');
 // Import configs
-const configServer = require('config/server.config');
-const configCookie = require('config/cookie.config');
-const configDatabase = require('config/database.config');
+import configServer from '@config/server.config';
+import configCookie from '@config/cookie.config';
+import configDatabase from '@config/database.config';
 // Import middleware
-const mwarePassport = require('utils/passport.util');
+const mwarePassport = require('@utils/passport.util');
 const mwareCORS = require('middlewares/cors.mw');
 const mwareAuth = require('middlewares/auth.mw');
 const mwareCookie = require('cookie-session');
@@ -63,6 +61,7 @@ app.use(function(req, res) {
 (async () => {
    try {
       // Start SQL DB
+      // @ts-ignore
       await createConnection(configDatabase.sql);
 
       // Start MongoDB

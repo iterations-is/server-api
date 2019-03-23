@@ -5,12 +5,12 @@
 
 // DB
 import { getConnection } from 'typeorm';
-import { Users } from 'database/sql/models/Users.model';
+import { Users } from '@sqlmodels/Users.model';
 
 // Passport
 const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
-const configOAuth = require('config/oauth.config');
+import configOAuth from '@config/oauth.config';
 
 passport.use(
    new GitHubStrategy(

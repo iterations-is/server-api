@@ -3,6 +3,7 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
+export {};
 const express = require('express');
 const router = express.Router();
 const routerGithub = require('./github/github.router');

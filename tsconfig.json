@@ -8,7 +8,12 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "baseUrl": "./"
+    "baseUrl": "./",
+    "paths": {
+      "@config/*": ["config/*"],
+      "@utils/*": ["utils/*"],
+      "@sqlmodels/*": ["database/sql/models/*"]
+    }
   },
   "exclude": ["node_modules"]
 }

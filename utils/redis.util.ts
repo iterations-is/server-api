@@ -3,13 +3,14 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
+export {};
 const jwt = require('jsonwebtoken');
-const configJWT = require('config/jwt.config');
+import configJWT from '@config/jwt.config';
 const redis = require('redis');
 const { promisify } = require('util');
-const databaseConfig = require('config/database.config');
+import configDatabase from '@config/database.config';
 const redisClient = redis.createClient({
-   password: databaseConfig.redis.password,
+   password: configDatabase.redis.password,
 });
 
 const redisClientAsync = {
