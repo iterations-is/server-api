@@ -11,6 +11,7 @@ require('module-alias/register');
 // Import external
 const express = require('express');
 const mongoose = require('mongoose');
+import { createConnection } from 'typeorm';
 const passport = require('passport');
 // Import configs
 const configServer = require('config/server.config');
@@ -58,19 +59,24 @@ app.use(function(req, res) {
 // -------------------------------------------------------------------------------------------------
 // Server initialize
 // -------------------------------------------------------------------------------------------------
-mongoose
-   .connect(configDatabase.mongo.url, {
-      useNewUrlParser: true,
-   })
-   .then(() => {
+
+(async () => {
+   try {
+      // Start SQL DB
+      await createConnection(configDatabase.sql);
+
+      // Start MongoDB
+      await mongoose.connect(configDatabase.mongo.url, {
+         useNewUrlParser: true,
+      });
+
       // Start server
       app.listen(configServer.port, () => {
          // FIXME log
          console.log(`Server http://localhost:${configServer.port}`);
       });
-   })
-   .catch(() => {
-      // FIXME log
-      console.log(`MongoDB failed.`);
+   } catch (e) {
+      console.log(e);
       process.exit(1);
-   });
+   }
+})();

@@ -3,21 +3,14 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-export {};
+// DB
+import { getConnection } from 'typeorm';
+import { Users } from 'database/sql/models/Users.model';
+
+// Passport
 const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
-const User = require('models/UserModel');
 const configOAuth = require('config/oauth.config');
-
-// passport.serializeUser((user, done) => {
-//    done(null, user.id);
-// });
-//
-// passport.deserializeUser((id, done) => {
-//    User.findById(id).then(user => {
-//       done(null, user);
-//    });
-// });
 
 passport.use(
    new GitHubStrategy(
@@ -27,28 +20,56 @@ passport.use(
          clientID: configOAuth.github.clientID,
          clientSecret: configOAuth.github.clientSecret,
       },
-      (accessToken, refreshToken, profile, done) => {
+      async (accessToken, refreshToken, profile, done) => {
          // Successful authorization
 
-         // TODO Rewrite to SQL
-         User.findOne({
-            ghid: profile.id,
-            typeOfAuth: configOAuth.github.uniqueName,
-         }).then(curUser => {
-            if (curUser) {
-               done(null, curUser);
-            } else {
-               new User({
-                  ghid: profile.id,
-                  username: profile.username,
-                  typeOfAuth: configOAuth.github.uniqueName,
-               })
-                  .save()
-                  .then(newUser => {
-                     done(null, newUser);
-                  });
+         const responseId = profile.id;
+         const responseUsername = profile.username;
+         const responseName = profile._json.name;
+
+         let sqlRepoUser = getConnection().getRepository(Users);
+
+         // Try to find existing user
+         try {
+            let user = await sqlRepoUser.findOneOrFail({
+               where: {
+                  auth_id: responseId,
+                  auth_type: configOAuth.github.uniqueName,
+               },
+            });
+
+            // Update if need
+            if (user.auth_name !== responseName || user.auth_username !== responseUsername) {
+               user.auth_username = responseUsername;
+               user.auth_name = responseName;
+
+               try {
+                  await sqlRepoUser.save(user);
+               } catch (e) {
+                  done(null, false);
+                  return;
+               }
             }
-         });
+
+            done(null, user);
+         } catch (e) {
+            // User does not exist => registration
+
+            let user = new Users();
+            user.auth_id = responseId;
+            user.auth_type = configOAuth.github.uniqueName;
+            user.auth_username = responseUsername;
+            user.auth_name = responseName;
+
+            try {
+               await sqlRepoUser.save(user);
+               done(null, user);
+            } catch (e) {
+               done(null, false);
+            }
+         }
+
+         // User information is provided as req.user = {};
       },
    ),
 );
