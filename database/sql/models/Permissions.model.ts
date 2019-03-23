@@ -4,6 +4,10 @@ import { GlobalRoles } from './GlobalRoles.model';
 @Entity()
 @Unique(['namespace', 'key'])
 export class Permissions {
+   // ----------------------------------------------------------------------------------------------
+   // Attributes
+   // ----------------------------------------------------------------------------------------------
+
    @PrimaryGeneratedColumn()
    id: number;
 
@@ -18,6 +22,10 @@ export class Permissions {
       length: 80,
    })
    key: string;
+
+   // ----------------------------------------------------------------------------------------------
+   // Relations
+   // ----------------------------------------------------------------------------------------------
 
    @ManyToMany(type => GlobalRoles, permissions => permissions.globalRoles)
    permissions: GlobalRoles[];

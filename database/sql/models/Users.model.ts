@@ -6,6 +6,10 @@ import { GlobalRoles } from '@sqlmodels/GlobalRoles.model';
 })
 @Unique(['auth_id', 'auth_type'])
 export class Users {
+   // ----------------------------------------------------------------------------------------------
+   // Attributes
+   // ----------------------------------------------------------------------------------------------
+
    @PrimaryGeneratedColumn()
    id: number;
 
@@ -33,6 +37,10 @@ export class Users {
       nullable: true,
    })
    auth_name: string;
+
+   // ----------------------------------------------------------------------------------------------
+   // Relations
+   // ----------------------------------------------------------------------------------------------
 
    @ManyToOne(type => GlobalRoles, role => role.users)
    @JoinColumn({
