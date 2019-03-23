@@ -1,5 +1,6 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ProjectCategories } from '@sqlmodels/ProjectCategories.model';
+import { ProjectRoles } from '@sqlmodels/ProjectRoles.model';
 
 @Entity()
 export class Projects {
@@ -42,4 +43,7 @@ export class Projects {
       name: 'fk__project_categories_id',
    })
    category: ProjectCategories;
+
+   @OneToMany(type => ProjectRoles, role => role.project)
+   roles: ProjectRoles[];
 }

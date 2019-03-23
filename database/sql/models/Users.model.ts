@@ -1,5 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToOne, JoinColumn } from 'typeorm';
+import {
+   Entity,
+   PrimaryGeneratedColumn,
+   Column,
+   Unique,
+   ManyToOne,
+   JoinColumn,
+   ManyToMany,
+   JoinTable,
+} from 'typeorm';
 import { GlobalRoles } from '@sqlmodels/GlobalRoles.model';
+import { ProjectRoles } from '@sqlmodels/ProjectRoles.model';
 
 @Entity({
    name: 'users',
@@ -47,4 +57,12 @@ export class Users {
       name: 'fk__global_roles_id',
    })
    role: GlobalRoles;
+
+   @ManyToMany(type => ProjectRoles, projectRoles => projectRoles.users)
+   @JoinTable({
+      name: 'user_has_project_roles',
+      joinColumns: [{ name: 'fk__users_id' }],
+      inverseJoinColumns: [{ name: 'fk__project_roles_id' }],
+   })
+   projectRoles: ProjectRoles[];
 }
