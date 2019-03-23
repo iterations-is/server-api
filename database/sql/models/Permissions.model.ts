@@ -7,10 +7,16 @@ export class Permissions {
    @PrimaryGeneratedColumn()
    id: number;
 
-   @Column()
+   @Column({
+      type: 'varchar',
+      length: 40,
+   })
    namespace: string;
 
-   @Column()
+   @Column({
+      type: 'varchar',
+      length: 80,
+   })
    key: string;
 
    @ManyToMany(type => GlobalRoles, permissions => permissions.globalRoles)

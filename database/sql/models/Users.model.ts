@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToOne, JoinColumn } from 'typeorm';
+import { GlobalRoles } from '@sqlmodels/GlobalRoles.model';
 
 @Entity({
    name: 'users',
@@ -10,18 +11,32 @@ export class Users {
 
    @Column({
       type: 'int',
-      nullable: false,
    })
    auth_id: number;
 
-   @Column()
+   @Column({
+      type: 'varchar',
+      length: 40,
+   })
    auth_type: string;
 
-   @Column()
+   @Column({
+      type: 'varchar',
+      length: 40,
+      nullable: true,
+   })
    auth_username: string;
 
    @Column({
+      type: 'varchar',
+      length: 80,
       nullable: true,
    })
    auth_name: string;
+
+   @ManyToOne(type => GlobalRoles, role => role.users)
+   @JoinColumn({
+      name: 'fk__global_roles_id',
+   })
+   role: GlobalRoles;
 }
