@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Projects } from '@sqlmodels/Projects';
+import { Projects } from './Projects';
 
 @Entity()
 export class Tags {

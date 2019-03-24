@@ -8,8 +8,8 @@ import {
    ManyToMany,
    JoinTable,
 } from 'typeorm';
-import { GlobalRoles } from '@sqlmodels/GlobalRoles.model';
-import { ProjectRoles } from '@sqlmodels/ProjectRoles.model';
+import { GlobalRoles } from './GlobalRoles.model';
+import { ProjectRoles } from './ProjectRoles.model';
 
 @Entity({
    name: 'users',

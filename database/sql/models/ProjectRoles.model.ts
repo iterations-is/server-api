@@ -7,8 +7,8 @@ import {
    ManyToOne,
    JoinColumn,
 } from 'typeorm';
-import { Projects } from '@sqlmodels/Projects';
-import { Users } from '@sqlmodels/Users.model';
+import { Projects } from './Projects';
+import { Users } from './Users.model';
 
 @Entity()
 @Unique(['name'])

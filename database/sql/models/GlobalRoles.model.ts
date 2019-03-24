@@ -7,8 +7,8 @@ import {
    JoinTable,
    OneToMany,
 } from 'typeorm';
-import { Permissions } from '@sqlmodels/Permissions.model';
-import { Users } from '@sqlmodels/Users.model';
+import { Permissions } from './Permissions.model';
+import { Users } from './Users.model';
 
 @Entity()
 @Unique(['name'])

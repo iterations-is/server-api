@@ -62,7 +62,7 @@ app.use(function(req, res) {
    try {
       // Start SQL DB
       // @ts-ignore
-      await createConnection(configDatabase.sql);
+      await createConnection();
 
       // Start MongoDB
       await mongoose.connect(configDatabase.mongo.url, {

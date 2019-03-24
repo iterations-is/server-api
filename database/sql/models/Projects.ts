@@ -8,9 +8,9 @@ import {
    OneToMany,
    PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ProjectCategories } from '@sqlmodels/ProjectCategories.model';
-import { ProjectRoles } from '@sqlmodels/ProjectRoles.model';
-import { Tags } from '@sqlmodels/Tags.model';
+import { ProjectCategories } from './ProjectCategories.model';
+import { ProjectRoles } from './ProjectRoles.model';
+import { Tags } from './Tags.model';
 
 @Entity()
 export class Projects {

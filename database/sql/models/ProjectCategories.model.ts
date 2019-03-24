@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, Unique, OneToMany } from 'typeorm';
-import { Projects } from '@sqlmodels/Projects';
+import { Projects } from './Projects';
 
 @Entity()
 @Unique(['name'])
