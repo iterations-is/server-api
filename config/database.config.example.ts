@@ -1,20 +1,12 @@
 export default {
    redis: {
+      // Redis database password
       password: 'RedisPassword',
+      // Expiration time in seconds for "temporaryToken" => "persistentToken" during authorization
+      expirationTokenStorage: 10 * 60,
    },
    mongo: {
+      // MongoDB connection url
       url: 'mongodb://localhost:27017/iterations',
-   },
-   sql: {
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'user',
-      password: 'pass',
-      database: 'iterations',
-      synchronize: true,
-      logging: false,
-      entities: ['database/sql/models/**/*.ts'],
-      migrations: ['database/sql/migrations/**/*.ts'],
    },
 };

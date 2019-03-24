@@ -17,8 +17,8 @@ import configCookie from '@config/cookie.config';
 import configDatabase from '@config/database.config';
 // Import middleware
 const mwarePassport = require('@utils/passport.util');
-const mwareCORS = require('middlewares/cors.mw');
-const mwareAuth = require('middlewares/auth.mw');
+const mwareCORS = require('@middlewares/cors.mw');
+const mwareAuth = require('@middlewares/auth.mw');
 const mwareCookie = require('cookie-session');
 // Import routers
 const routerAPI = require('./api/Router');
@@ -62,7 +62,7 @@ app.use(function(req, res) {
    try {
       // Start SQL DB
       // @ts-ignore
-      await createConnection(configDatabase.sql);
+      await createConnection();
 
       // Start MongoDB
       await mongoose.connect(configDatabase.mongo.url, {

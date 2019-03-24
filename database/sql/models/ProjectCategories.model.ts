@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToMany } from 'typeorm';
-import { GlobalRoles } from './GlobalRoles.model';
+import { Entity, PrimaryGeneratedColumn, Column, Unique, OneToMany } from 'typeorm';
+import { Projects } from './Projects';
 
 @Entity()
-@Unique(['namespace', 'key'])
-export class Permissions {
+@Unique(['name'])
+export class ProjectCategories {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -15,18 +15,12 @@ export class Permissions {
       type: 'varchar',
       length: 40,
    })
-   namespace: string;
-
-   @Column({
-      type: 'varchar',
-      length: 80,
-   })
-   key: string;
+   name: string;
 
    // ----------------------------------------------------------------------------------------------
    // Relations
    // ----------------------------------------------------------------------------------------------
 
-   @ManyToMany(type => GlobalRoles, permissions => permissions.globalRoles)
-   permissions: GlobalRoles[];
+   @OneToMany(type => Projects, project => project.category)
+   projects: Projects[];
 }

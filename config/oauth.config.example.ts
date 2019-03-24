@@ -1,11 +1,13 @@
 export default {
    github: {
-      // OAuth Details
+      // Full callback address
       callback: '...',
+      // Client ID
       clientID: '...',
+      // Client Secret
       clientSecret: '...',
 
-      // Unique ID within application
+      // Unique auth type within application (used as a unique pair "auth_id + auth_type" in DB)
       uniqueName: 'github',
    },
 };

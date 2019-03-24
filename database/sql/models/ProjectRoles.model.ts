@@ -1,9 +1,18 @@
-import { Entity, PrimaryGeneratedColumn, Column, Unique, ManyToMany } from 'typeorm';
-import { GlobalRoles } from './GlobalRoles.model';
+import {
+   Entity,
+   PrimaryGeneratedColumn,
+   Column,
+   Unique,
+   ManyToMany,
+   ManyToOne,
+   JoinColumn,
+} from 'typeorm';
+import { Projects } from './Projects';
+import { Users } from './Users.model';
 
 @Entity()
-@Unique(['namespace', 'key'])
-export class Permissions {
+@Unique(['name'])
+export class ProjectRoles {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -11,22 +20,25 @@ export class Permissions {
    @PrimaryGeneratedColumn()
    id: number;
 
+   @Column()
+   isEditable: boolean;
+
    @Column({
       type: 'varchar',
       length: 40,
    })
-   namespace: string;
-
-   @Column({
-      type: 'varchar',
-      length: 80,
-   })
-   key: string;
+   name: string;
 
    // ----------------------------------------------------------------------------------------------
    // Relations
    // ----------------------------------------------------------------------------------------------
 
-   @ManyToMany(type => GlobalRoles, permissions => permissions.globalRoles)
-   permissions: GlobalRoles[];
+   @ManyToOne(type => Projects, project => project.roles)
+   @JoinColumn({
+      name: 'fk__projects_id',
+   })
+   project: Projects;
+
+   @ManyToMany(type => Users, users => users.projectRoles)
+   users: Users[];
 }

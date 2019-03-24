@@ -27,12 +27,22 @@
   },
   "scripts": {
     "start": "ts-node -P tsconfig.json -r tsconfig-paths/register app.ts",
+    "// PROCESS MANAGER": "",
     "dev:start": "pm2 start --env development",
     "dev:stop": "pm2 stop Iterations-API",
     "dev:del": "pm2 del Iterations-API",
     "prod:start": "pm2 start --env production",
     "prod:stop": "pm2 stop Iterations-API",
-    "prod:del": "pm2 del Iterations-API"
+    "prod:del": "pm2 del Iterations-API",
+    "// MIGRATIONS": "",
+    "migration:create": "ts-node -P tsconfig.json -r tsconfig-paths/register ./node_modules/.bin/typeorm migration:create -n ",
+    "migration:generate": "ts-node -P tsconfig.json -r tsconfig-paths/register ./node_modules/.bin/typeorm migration:generate -n ",
+    "migration:run": "ts-node -P tsconfig.json -r tsconfig-paths/register ./node_modules/.bin/typeorm migration:run",
+    "migration:revert": "ts-node -P tsconfig.json -r tsconfig-paths/register ./node_modules/.bin/typeorm migration:revert",
+    "// SEEDS": "",
+    "seed:create": "ts-node -P tsconfig.json -r tsconfig-paths/register ./node_modules/.bin/typeorm migration:create -c seed -n ",
+    "seed:run": "ts-node -P tsconfig.json -r tsconfig-paths/register ./node_modules/.bin/typeorm migration:run -c seed",
+    "seed:revert": "ts-node -P tsconfig.json -r tsconfig-paths/register ./node_modules/.bin/typeorm migration:revert -c seed"
   },
   "devDependencies": {
     "pm2": "^3.4.0"

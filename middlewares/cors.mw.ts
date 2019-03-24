@@ -1,5 +1,6 @@
 /**
  * @file Middleware for CORS
+ * @description Solve CORS issues from different domains and ports.
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 

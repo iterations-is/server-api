@@ -1,4 +1,5 @@
 /config/*.config.ts
+/ormconfig.js
 /node_modules
 /logs/*
 /tmp/*

@@ -1,11 +1,13 @@
 /**
  * @file PassportJS
+ * @description Set strategies and handle authorizations – find or create the authorized used in DB.
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
 // DB
 import { getConnection } from 'typeorm';
 import { Users } from '@sqlmodels/Users.model';
+import { GlobalRoles } from '@sqlmodels/GlobalRoles.model';
 
 // Passport
 const passport = require('passport');
@@ -26,8 +28,7 @@ passport.use(
          const responseId = profile.id;
          const responseUsername = profile.username;
          const responseName = profile._json.name;
-
-         let sqlRepoUser = getConnection().getRepository(Users);
+         const sqlRepoUser = getConnection().getRepository(Users);
 
          // Try to find existing user
          try {
@@ -55,11 +56,17 @@ passport.use(
          } catch (e) {
             // User does not exist => registration
 
+            // Get user role
+            const role = await getConnection()
+               .getRepository(GlobalRoles)
+               .findOne({ where: { name: 'user' } });
+
             let user = new Users();
             user.auth_id = responseId;
             user.auth_type = configOAuth.github.uniqueName;
             user.auth_username = responseUsername;
             user.auth_name = responseName;
+            user.role = role;
 
             try {
                await sqlRepoUser.save(user);
