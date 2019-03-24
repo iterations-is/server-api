@@ -52,7 +52,9 @@ export class Users {
    // Relations
    // ----------------------------------------------------------------------------------------------
 
-   @ManyToOne(type => GlobalRoles, role => role.users)
+   @ManyToOne(type => GlobalRoles, role => role.users, {
+      nullable: false,
+   })
    @JoinColumn({
       name: 'fk__global_roles_id',
    })

@@ -1,7 +1,6 @@
 export default {
-   // Keys
-   // https://github.com/expressjs/cookie-session
-   keys: ['...'],
-   // Token expiration in seconds
-   expiration: 10,
+   // Cookie max age
+   maxAge: 24 * 60 * 60 * 1000,
+   // Keys (https://github.com/expressjs/cookie-session)
+   keys: ['key_example'],
 };

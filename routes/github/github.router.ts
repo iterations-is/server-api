@@ -1,5 +1,6 @@
 /**
  * @file Github OAuth
+ * @description Github OAuth init and callback pages.
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
@@ -43,7 +44,10 @@ router.get(
    }),
    (req, res) => {
       // Successful authentication from OAuth server
-      let tokenTmp = req.session.tokenTmp;
+      const tokenTmp = req.session.tokenTmp;
+      const userID = req.user.id;
+      const authID = req.user.auth_id;
+      const authType = req.user.auth_type;
 
       // Destroy session
       req.session = null;
@@ -53,10 +57,12 @@ router.get(
          return res.send('Sorry, no temporary token provided.');
 
       // Create permanent token and save it to db
-      utilRedis.redisClient.setTokenIntoTemporaryToken(tokenTmp).then(() => {
-         // Successful authorization
-         res.send('Successful authorization, you can close this window.');
-      });
+      utilRedis.redisClient
+         .setTokenIntoTokenStorage(tokenTmp, userID, authID, authType)
+         .then(() => {
+            // Successful authorization
+            res.send('Successful authorization, you can close this window.');
+         });
    },
 );
 

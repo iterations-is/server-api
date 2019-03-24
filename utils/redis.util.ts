@@ -31,20 +31,28 @@ class Redis {
       return value !== null;
    }
 
-   async setTokenIntoTemporaryToken(tokenTmp, userID, userOAuth, userName) {
+   async setTokenIntoTokenStorage(
+      tokenTmp: string,
+      userID: number,
+      authID: number,
+      authType: string,
+   ) {
       const token = jwt.sign(
          {
             user_id: userID,
-            user_oauth: userOAuth,
-            user_name: userName,
+            auth_id: authID,
+            auth_type: authType,
          },
          configJWT.secret,
-         {
-            expiresIn: 10 * 60,
-         },
+         { expiresIn: configJWT.expiration },
       );
 
-      await redisClientAsync.set(tokenTmp, token, 'EX', configJWT.expiration);
+      await redisClientAsync.set(
+         tokenTmp,
+         token,
+         'EX',
+         configDatabase.redis.expirationTokenStorage,
+      );
    }
 }
 

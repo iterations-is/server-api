@@ -1,6 +1,6 @@
 export default {
-   // Secret string
-   secret: '...',
-   // Token expiration in seconds
-   expiration: 10,
+   // Secret string for JWT (https://jwt.io)
+   secret: 'UniqueSecret',
+   // JWT token expiration in seconds
+   expiration: 24 * 60 * 60,
 };
