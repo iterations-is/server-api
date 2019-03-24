@@ -12,6 +12,7 @@
     "paths": {
       "@config/*": ["config/*"],
       "@utils/*": ["utils/*"],
+      "@middlewares/*": ["middlewares/*"],
       "@sqlmodels/*": ["database/sql/models/*"]
     }
   },
