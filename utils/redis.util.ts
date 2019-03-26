@@ -10,6 +10,8 @@ const redis = require('redis');
 const { promisify } = require('util');
 import configDatabase from '@config/database.config';
 const redisClient = redis.createClient({
+   host: configDatabase.redis.host,
+   port: configDatabase.redis.port,
    password: configDatabase.redis.password,
 });
 
