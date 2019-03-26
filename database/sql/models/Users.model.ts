@@ -7,9 +7,12 @@ import {
    JoinColumn,
    ManyToMany,
    JoinTable,
+   OneToMany,
 } from 'typeorm';
 import { GlobalRoles } from './GlobalRoles.model';
 import { ProjectRoles } from './ProjectRoles.model';
+import { Projects } from '@sqlmodels/Projects';
+import { Notifications } from '@sqlmodels/Notifications.model';
 
 @Entity({
    name: 'users',
@@ -67,4 +70,7 @@ export class Users {
       inverseJoinColumns: [{ name: 'fk__project_roles_id' }],
    })
    projectRoles: ProjectRoles[];
+
+   @OneToMany(type => Notifications, notification => notification.user)
+   notifications: Notifications[];
 }

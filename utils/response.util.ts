@@ -82,3 +82,24 @@ export const genResponseErrorData = (message: string, data: object): object => {
       dat: data,
    };
 };
+
+/**
+ * Generate error response with invalid descriptions
+ * @param message Error description
+ * @param invalid Array of short descriptions of invalid params
+ * @param data Additional data to send
+ */
+export const genResponseErrorDataInvalid = (
+   message: string,
+   invalid: string[],
+   data: object = {},
+): object => {
+   return {
+      typ: responseTypes.error,
+      msg: message,
+      dat: {
+         ...data,
+         invalid: invalid,
+      },
+   };
+};

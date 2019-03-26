@@ -9,7 +9,7 @@ module.exports = {
          env: {},
          env_development: {
             NODE_ENV: 'development',
-            watch: '.',
+            watch: ['./**/*.ts', './**/*.js', './**/*.json'],
          },
          env_production: {
             NODE_ENV: 'production',

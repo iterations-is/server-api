@@ -11,6 +11,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 import { createConnection } from 'typeorm';
 const passport = require('passport');
+import { genResponseErrorSimple } from '@utils/response.util';
 // Import configs
 import configServer from '@config/server.config';
 import configCookie from '@config/cookie.config';
@@ -51,7 +52,7 @@ app.use('/api', routerAPI);
 app.use('/pages', routerPages);
 
 app.use(function(req, res) {
-   res.status(404).send("404 // Sorry can't find that!");
+   res.status(404).send(genResponseErrorSimple('Required path does not exist!'));
 });
 
 // -------------------------------------------------------------------------------------------------
