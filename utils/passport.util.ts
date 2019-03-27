@@ -13,6 +13,7 @@ import { GlobalRoles } from '@sqlmodels/GlobalRoles.model';
 const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 import configOAuth from '@config/oauth.config';
+import logger from '@utils/logger.util';
 
 passport.use(
    new GitHubStrategy(
@@ -80,3 +81,5 @@ passport.use(
       },
    ),
 );
+
+logger.debug('Utility:Passport start.');

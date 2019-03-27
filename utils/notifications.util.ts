@@ -7,6 +7,7 @@
 import { getConnection } from 'typeorm';
 import { Notifications } from '@sqlmodels/Notifications.model';
 import { Users } from '@sqlmodels/Users.model';
+import logger from '@utils/logger.util';
 
 const repoNotifications = getConnection().getRepository(Notifications);
 
@@ -23,3 +24,5 @@ export const createNotificationForUsers = async (message: string, users_id: User
 
    await repoNotifications.save(notifications);
 };
+
+logger.debug('Utility:Notifications start.');

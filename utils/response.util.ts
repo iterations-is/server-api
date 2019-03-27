@@ -3,6 +3,8 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
+import logger from '@utils/logger.util';
+
 /**
  * Default response types
  */
@@ -103,3 +105,5 @@ export const genResponseErrorDataInvalid = (
       },
    };
 };
+
+logger.debug('Utility:ResponseGenerator start.');

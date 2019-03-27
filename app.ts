@@ -12,6 +12,7 @@ const mongoose = require('mongoose');
 import { createConnection } from 'typeorm';
 const passport = require('passport');
 import { genResponseErrorSimple } from '@utils/response.util';
+import logger from '@utils/logger.util';
 // Import configs
 import configServer from '@config/server.config';
 import configCookie from '@config/cookie.config';
@@ -72,11 +73,10 @@ app.use(function(req, res) {
 
       // Start server
       app.listen(configServer.port, () => {
-         // FIXME log
-         console.log(`Server http://localhost:${configServer.port}`);
+         logger.info('Server started at http://localhost:${configServer.port}');
       });
    } catch (e) {
-      console.log(e);
+      logger.error(e);
       process.exit(1);
    }
 })();

@@ -1,3 +1,5 @@
+import logger from '@utils/logger.util';
+
 /**
  * @file Validation tools
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
@@ -22,3 +24,5 @@ export const validateViaJoiSchema = (object: object, schema: object): boolean =>
    const result = joi.validate(object, schema);
    return result.error === null;
 };
+
+logger.debug('Utility:Validator start.');
