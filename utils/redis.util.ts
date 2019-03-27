@@ -3,12 +3,12 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-export {};
 const jwt = require('jsonwebtoken');
 import configJWT from '@config/jwt.config';
 const redis = require('redis');
 const { promisify } = require('util');
 import configDatabase from '@config/database.config';
+import logger from '@utils/logger.util';
 const redisClient = redis.createClient({
    host: configDatabase.redis.host,
    port: configDatabase.redis.port,
@@ -64,3 +64,5 @@ module.exports = {
    redisClient: redisClientMy,
    redisClientAsync,
 };
+
+logger.debug('Utility:Redis start.');
