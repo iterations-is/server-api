@@ -24,7 +24,8 @@
     "tsconfig-paths": "^3.8.0",
     "typeorm": "^0.2.15",
     "typescript": "^3.3.4000",
-    "winston": "^3.2.1"
+    "winston": "^3.2.1",
+    "winston-daily-rotate-file": "^3.8.0"
   },
   "scripts": {
     "start": "ts-node -P tsconfig.json -r tsconfig-paths/register app.ts",
