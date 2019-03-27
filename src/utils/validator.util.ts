@@ -12,7 +12,7 @@ const joi = require('joi');
  * @param tokenTmp Temporary token
  */
 export const validateTokenTemporary = (tokenTmp: string): boolean => {
-   return tokenTmp && tokenTmp.length === 77;
+   return /^[abcdef0123456789]{77}$/.test(tokenTmp);
 };
 
 /**
