@@ -1,6 +1,12 @@
-/config/*.config.ts
-/ormconfig.js
+# NodeJS
 /node_modules
+
+# Configurations
+/src/config/*.config.ts
+/ormconfig.js
+
+# Temporary files
+/coverage/*
 /logs/*
 /tmp/*
 

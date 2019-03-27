@@ -8,12 +8,12 @@ module.exports = [
       database: 'iterations',
       synchronize: true,
       logging: false,
-      entities: ['database/sql/models/**/*.ts'],
+      entities: ['src/database/sql/models/**/*.ts'],
       // Migrations
       migrationsTableName: 'migrations',
-      migrations: ['database/sql/migrations/*.ts'],
+      migrations: ['src/database/sql/migrations/*.ts'],
       cli: {
-         migrationsDir: 'database/sql/migrations',
+         migrationsDir: 'src/database/sql/migrations',
       },
    },
    {
@@ -27,12 +27,12 @@ module.exports = [
       password: 'pass',
       database: 'iterations',
       logging: false,
-      entities: ['database/sql/models/**/*.ts'],
+      entities: ['src/database/sql/models/**/*.ts'],
       // Seeds
       migrationsTableName: 'seeds',
-      migrations: ['database/sql/seeds/*.ts'],
+      migrations: ['src/database/sql/seeds/*.ts'],
       cli: {
-         migrationsDir: 'database/sql/seeds',
+         migrationsDir: 'src/database/sql/seeds',
       },
    },
 ];
