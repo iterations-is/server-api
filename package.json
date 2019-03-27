@@ -38,6 +38,7 @@
     "prod:del": "pm2 del Iterations-API",
     "// TESTS": "",
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "// MIGRATIONS": "",
     "migration:create": "ts-node -P tsconfig.json -r tsconfig-paths/register ./node_modules/.bin/typeorm migration:create -n ",
     "migration:generate": "ts-node -P tsconfig.json -r tsconfig-paths/register ./node_modules/.bin/typeorm migration:generate -n ",
