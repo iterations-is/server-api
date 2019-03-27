@@ -3,28 +3,26 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-// -------------------------------------------------------------------------------------------------
-// Dependencies
-// -------------------------------------------------------------------------------------------------
 // Import external
 const express = require('express');
 const mongoose = require('mongoose');
-import { createConnection } from 'typeorm';
 const passport = require('passport');
-import { genResponseErrorSimple } from '@utils/response.util';
-import logger from '@utils/logger.util';
+import { createConnection } from 'typeorm';
 // Import configs
 import configServer from '@config/server.config';
 import configCookie from '@config/cookie.config';
 import configDatabase from '@config/database.config';
+// Utilities
+import logger from '@utils/logger.util';
+import { genResponseErrorSimple } from '@utils/response.util';
 // Import middleware
 const mwarePassport = require('@utils/passport.util');
-const mwareCORS = require('@middlewares/cors.mw');
-const mwareAuth = require('@middlewares/auth.mw');
 const mwareCookie = require('cookie-session');
+import mwareCORS from '@middlewares/cors.mw';
+import mwareAuth from '@middlewares/auth.mw';
 // Import routers
-const routerAPI = require('./api/Router');
-const routerPages = require('./routes/Router');
+import routerAPI from '@api/Router';
+import routerPages from '@routes/Router';
 
 // -------------------------------------------------------------------------------------------------
 // Application
@@ -59,21 +57,23 @@ app.use(function(req, res) {
 // -------------------------------------------------------------------------------------------------
 // Server initialize
 // -------------------------------------------------------------------------------------------------
-
 (async () => {
    try {
+      logger.info('Connecting to databases...');
+
       // Start SQL DB
-      // @ts-ignore
       await createConnection();
+      logger.info('SQL database connected');
 
       // Start MongoDB
       await mongoose.connect(configDatabase.mongo.url, {
          useNewUrlParser: true,
       });
+      logger.info('NoSQL database connected');
 
       // Start server
       app.listen(configServer.port, () => {
-         logger.info('Server started at http://localhost:${configServer.port}');
+         logger.info(`Server started at http://localhost:${configServer.port}`);
       });
    } catch (e) {
       logger.error(e);

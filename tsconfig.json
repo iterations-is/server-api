@@ -10,10 +10,14 @@
     "sourceMap": true,
     "baseUrl": "./",
     "paths": {
-      "@config/*": ["config/*"],
-      "@utils/*": ["utils/*"],
-      "@middlewares/*": ["middlewares/*"],
-      "@sqlmodels/*": ["database/sql/models/*"]
+      "@api/*": ["src/api/*"],
+      "@config/*": ["src/config/*"],
+      "@database/*": ["src/database/*"],
+      "@modelsSQL/*": ["src/database/sql/models/*"],
+      "@modelsNoSQL/*": ["src/database/nosql/models/*"],
+      "@middlewares/*": ["src/middlewares/*"],
+      "@routes/*": ["src/routes/*"],
+      "@utils/*": ["src/utils/*"]
     }
   },
   "exclude": ["node_modules"]
