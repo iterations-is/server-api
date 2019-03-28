@@ -5,7 +5,7 @@
 
 import { genResponseErrorDataInvalid, genResponseSuccessData } from '@utils/response.util';
 import permissions from '@middlewares/permissions.mw';
-import { getConnection } from 'typeorm';
+import { getConnection } from '@utils/typeorm.util';
 import { ProjectCategories } from '@modelsSQL/ProjectCategories.model';
 import { validateViaJoiSchema } from '@utils/validator.util';
 

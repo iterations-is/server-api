@@ -5,7 +5,7 @@
 
 import permissions from '@middlewares/permissions.mw';
 import { validateViaJoiSchema } from '@utils/validator.util';
-import { getConnection } from 'typeorm';
+import { getConnection } from '@utils/typeorm.util';
 import { Notifications } from '@modelsSQL/Notifications.model';
 import {
    genResponseErrorDataInvalid,
