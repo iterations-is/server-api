@@ -4,7 +4,7 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import { getConnection } from 'typeorm';
+import { getConnection } from '@utils/typeorm.util';
 import { Notifications } from '@modelsSQL/Notifications.model';
 import { Users } from '@modelsSQL/Users.model';
 import logger from '@utils/logger.util';

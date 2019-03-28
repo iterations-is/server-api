@@ -4,7 +4,7 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import { getConnection } from 'typeorm';
+import { getConnection } from '@utils/typeorm.util';
 import { Users } from '@modelsSQL/Users.model';
 import { GlobalRoles } from '@modelsSQL/GlobalRoles.model';
 import configOAuth from '@config/oauth.config';
