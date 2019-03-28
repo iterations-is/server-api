@@ -1,3 +1,5 @@
+import { createConnection, getConnectionOptions } from 'typeorm';
+
 /**
  * @file Server
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
@@ -7,7 +9,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport');
-import { createConnection } from 'typeorm';
+import { createTypeormConnection } from '@utils/typeorm.util';
 // Import configs
 import configServer from '@config/server.config';
 import configCookie from '@config/cookie.config';
@@ -59,10 +61,15 @@ app.use(function(req, res) {
 // -------------------------------------------------------------------------------------------------
 (async () => {
    try {
+      if (!process.env.NODE_ENV) {
+         logger.error('You need to provide NODE_ENV. Process exit.');
+         process.exit(1);
+      }
+
       logger.info('Connecting to databases...');
 
       // Start SQL DB
-      await createConnection();
+      await createTypeormConnection();
       logger.info('SQL database connected');
 
       // Start MongoDB

@@ -4,7 +4,7 @@
  */
 
 import permissions from '@middlewares/permissions.mw';
-import { getConnection } from 'typeorm';
+import { getConnection } from '@utils/typeorm.util';
 import { Users } from '@modelsSQL/Users.model';
 import { Notifications } from '@modelsSQL/Notifications.model';
 import { genResponseSuccessData } from '@utils/response.util';

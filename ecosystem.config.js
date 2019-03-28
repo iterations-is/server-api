@@ -9,7 +9,12 @@ module.exports = {
          env: {},
          env_development: {
             NODE_ENV: 'development',
+            name: 'Iterations-API-DEV',
             watch: ['./**/*.ts', './**/*.js', './**/*.json'],
+         },
+         env_test: {
+            NODE_ENV: 'test',
+            name: 'Iterations-API-TEST',
          },
          env_production: {
             NODE_ENV: 'production',
