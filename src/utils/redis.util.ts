@@ -3,12 +3,12 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import configJWT from '@config/jwt.config';
 import configDatabase from '@config/database.config';
 import logger from '@utils/logger.util';
+import { generateTokenJWT } from '@utils/tokens.util';
 
 const { promisify } = require('util');
-const jwt = require('jsonwebtoken');
+
 const redis = require('redis');
 
 // -------------------------------------------------------------------------------------------------
@@ -27,7 +27,7 @@ export const redisClientAsync = {
    set: promisify(redisClientCallbacks.set).bind(redisClientCallbacks),
 };
 
-export async function redistExistsKey(key) {
+export async function redisExistsKey(key) {
    let value = await redisClientAsync.get(key);
    return value !== null;
 }
@@ -38,15 +38,11 @@ export async function redisSetTokenIntoStorage(
    authID: number,
    authType: string,
 ) {
-   const token = jwt.sign(
-      {
-         user_id: userID,
-         auth_id: authID,
-         auth_type: authType,
-      },
-      configJWT.secret,
-      { expiresIn: configJWT.expiration },
-   );
+   const token = generateTokenJWT({
+      user_id: userID,
+      auth_id: authID,
+      auth_type: authType,
+   });
 
    await redisClientAsync.set(tokenTmp, token, 'EX', configDatabase.redis.expirationTokenStorage);
 }
