@@ -1,109 +1,75 @@
 /**
- * @file JSON response generator
+ * @file JSON response executors
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
 import logger from '@utils/logger.util';
 
-/**
- * Default response types
- */
-export const responseTypes = {
-   error: 'error',
-   success: 'success',
-};
+const recognizeSuccess = (code: number) => (code >= 200 && code < 300 ? 'success' : 'error');
 
 // -------------------------------------------------------------------------------------------------
-// Custom
+// Responses
 // -------------------------------------------------------------------------------------------------
 
 /**
- * Generate custom simple response
- * @param type One of responseTypes
+ * Execute simple text response
+ * @param res Response object from ExpressJS
+ * @param code Response code
  * @param message Response description
  */
-export const genResponseCustomSimple = (type: string, message: string): object => {
-   return {
-      typ: type,
+export const responseSimple = (res, code: number, message: string = ''): object => {
+   return res.status(code).json({
+      cod: code,
+      typ: recognizeSuccess(code),
       msg: message,
-   };
-};
-
-// -------------------------------------------------------------------------------------------------
-// Success
-// -------------------------------------------------------------------------------------------------
-
-/**
- * Generate success simple response
- * @param message Success description
- */
-export const genResponseSuccessSimple = (message: string): object => {
-   return {
-      typ: responseTypes.success,
-      msg: message,
-   };
+   });
 };
 
 /**
  * Generate success response with data
- * @param message Success description
- * @param data Data to send
+ * @param res Response object from ExpressJS
+ * @param code Response code
+ * @param message Response description
+ * @param data Response payload data
  */
-export const genResponseSuccessData = (message: string, data: object): object => {
-   return {
-      typ: responseTypes.success,
+export const responseData = (
+   res,
+   code: number,
+   message: string = '',
+   data: object = {},
+): object => {
+   return res.status(code).json({
+      cod: code,
+      typ: recognizeSuccess(code),
       msg: message,
       dat: data,
-   };
-};
-
-// -------------------------------------------------------------------------------------------------
-// Error
-// -------------------------------------------------------------------------------------------------
-
-/**
- * Generate error simple response
- * @param message Error description
- */
-export const genResponseErrorSimple = (message: string): object => {
-   return {
-      typ: responseTypes.error,
-      msg: message,
-   };
-};
-
-/**
- * Generate error response with data
- * @param message Error description
- * @param data Data to send
- */
-export const genResponseErrorData = (message: string, data: object): object => {
-   return {
-      typ: responseTypes.error,
-      msg: message,
-      dat: data,
-   };
+   });
 };
 
 /**
  * Generate error response with invalid descriptions
- * @param message Error description
+ * @param res Response object from ExpressJS
+ * @param code Response code
+ * @param message Response description
  * @param invalid Array of short descriptions of invalid params
- * @param data Additional data to send
+ * @param data Response payload data
  */
-export const genResponseErrorDataInvalid = (
+export const responseInvalidData = (
+   res,
+   code: number,
    message: string,
-   invalid: string[],
+   invalid: string[] = [],
    data: object = {},
 ): object => {
-   return {
-      typ: responseTypes.error,
+   return res.status(code).json({
+      cod: code,
+      typ: recognizeSuccess(code),
       msg: message,
       dat: {
          ...data,
          invalid: invalid,
       },
-   };
+   });
 };
 
-logger.debug('Utility:ResponseGenerator start.');
+logger.debug('Utility:JSONResponse start.');

@@ -7,7 +7,7 @@
  */
 
 import configJWT from '@config/jwt.config';
-import { genResponseErrorData } from '@utils/response.util';
+import { responseInvalidData } from '@utils/response.util';
 
 const jwt = require('jsonwebtoken');
 
@@ -19,8 +19,8 @@ const authFreeRoutes = [
    '/pages/github/failure',
 
    // Authorization api
-   '/api/auth/token/temporary',
-   '/api/auth/token/persistent',
+   '/api/token/temporary',
+   '/api/token/persistent',
 
    // Ping
    '/api/ping/auth/without',
@@ -35,16 +35,12 @@ export default (req, res, next) => {
    try {
       // Get JWT from the request header Authorization and verify
       // "Bearer JWT.TOKEN.STRING"
-      const token = req.headers.authorization.split(' ')[1];
+      const token = req.headers.authorization;
       req.jwt = jwt.verify(token, configJWT.secret);
    } catch (err) {
-      // JWT is missing OR expired OR unexpected error
-      return res.status(401).json(
-         genResponseErrorData('Unauthorized', {
-            // TODO Better response reason for users
-            reason: err.message,
-         }),
-      );
+      return responseInvalidData(res, 401, 'Unauthorized', [
+         'authorization token is missing or invalid',
+      ]);
    }
 
    next();

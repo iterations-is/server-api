@@ -1,4 +1,4 @@
-import { generateTokenTemporary } from '@utils/generator.util';
+import { generateTokenTemporary } from '@utils/tokens.util';
 
 describe('temporary token', () => {
    test('generate', () => {

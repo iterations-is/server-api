@@ -1,5 +1,3 @@
-import { createConnection, getConnectionOptions } from 'typeorm';
-
 /**
  * @file Server
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
@@ -16,7 +14,7 @@ import configCookie from '@config/cookie.config';
 import configDatabase from '@config/database.config';
 // Utilities
 import logger from '@utils/logger.util';
-import { genResponseErrorSimple } from '@utils/response.util';
+import { responseSimple } from '@utils/response.util';
 // Import middleware
 const mwarePassport = require('@utils/passport.util');
 const mwareCookie = require('cookie-session');
@@ -53,7 +51,7 @@ app.use('/api', routerAPI);
 app.use('/pages', routerPages);
 
 app.use(function(req, res) {
-   res.status(404).send(genResponseErrorSimple('Required path does not exist!'));
+   return responseSimple(res, 404, 'Required path does not exist!');
 });
 
 // -------------------------------------------------------------------------------------------------

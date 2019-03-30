@@ -7,8 +7,8 @@
  * router.get('/path', permissions(['namespace.key_permission'], (req, res) => {}));
  */
 
-import { getManager } from 'typeorm';
-import { genResponseErrorSimple } from '@utils/response.util';
+import { getManager } from '@utils/typeorm.util';
+import { responseSimple } from '@utils/response.util';
 
 export default (permissions: string[]) => {
    return async (req, res, next) => {
@@ -36,7 +36,7 @@ export default (permissions: string[]) => {
       // Check if user have all required permissions
       for (let i = 0; i < permissions.length; i++)
          if (permissionsPure.indexOf(permissions[i]) === -1)
-            return res.status(403).json(genResponseErrorSimple('Forbidden'));
+            return responseSimple(res, 403, 'Forbidden');
 
       return next();
    };

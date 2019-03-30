@@ -1,13 +1,15 @@
 /**
- * @file TypeORM
+ * @file TypeORM wrappers
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
 import {
    createConnection,
-   getConnection as getConnectionTypescript,
+   getConnection as getConnectionTypeorm,
+   getManager as getManagerTypeorm,
    getConnectionOptions,
 } from 'typeorm';
+import logger from '@utils/logger.util';
 
 /**
  * Connect to primary database and provide its connection as a result.
@@ -30,5 +32,14 @@ export const createTypeormConnection = async () => {
  * Get current database connection.
  */
 export const getConnection = () => {
-   return getConnectionTypescript(process.env.NODE_ENV);
+   return getConnectionTypeorm(process.env.NODE_ENV);
 };
+
+/**
+ * Get current database connection.
+ */
+export const getManager = () => {
+   return getManagerTypeorm(process.env.NODE_ENV);
+};
+
+logger.debug('Utility:TypeORM wrapper start.');

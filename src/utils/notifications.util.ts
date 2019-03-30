@@ -1,28 +1,36 @@
 /**
- * @file Notifications
- * @description
+ * @file
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
+import { Users } from '@modelsSQL/Users.model';
 import { getConnection } from '@utils/typeorm.util';
 import { Notifications } from '@modelsSQL/Notifications.model';
-import { Users } from '@modelsSQL/Users.model';
-import logger from '@utils/logger.util';
 
-const repoNotifications = getConnection().getRepository(Notifications);
+/**
+ * Create notification for group of users
+ * @param message
+ * @param users
+ */
+export const dbCreateNotifications = async (message: string, users: Users[]) => {
+   const connection = getConnection();
+   const repoNotifications = connection.getRepository(Notifications);
 
-export const createNotificationForUsers = async (message: string, users_id: Users[]) => {
-   let notifications: Notifications[] = [];
+   let notificationsToCreate: Notifications[] = [];
 
-   users_id.forEach((user_id: Users) => {
+   users.forEach((user: Users) => {
       const notification = new Notifications();
       notification.message = message;
       notification.isRead = false;
-      notification.user = user_id;
-      notifications.push(notification);
+      notification.user = user;
+      notificationsToCreate.push(notification);
    });
 
-   await repoNotifications.save(notifications);
-};
+   try {
+      await repoNotifications.save(notificationsToCreate);
 
-logger.debug('Utility:Notifications start.');
+      return true;
+   } catch (e) {
+      return false;
+   }
+};

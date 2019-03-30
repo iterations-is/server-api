@@ -7,6 +7,11 @@ import logger from '@utils/logger.util';
 
 const joi = require('joi');
 
+interface joiValidationResponse {
+   isValidRequest: boolean;
+   verbose: string[];
+}
+
 /**
  * Temporary token validation
  * @param tokenTmp Temporary token
@@ -23,6 +28,24 @@ export const validateTokenTemporary = (tokenTmp: string): boolean => {
 export const validateViaJoiSchema = (object: object, schema: object): boolean => {
    const { error } = joi.validate(object, schema);
    return error === null;
+};
+
+/**
+ *
+ */
+export const validateRequestJoi = (
+   schemas: object,
+   body: object,
+   params: object,
+): joiValidationResponse => {
+   const joiBody = schemas['body'] === null ? { error: null } : joi.validate(body, schemas['body']);
+   const joiParams =
+      schemas['params'] === null ? { error: null } : joi.validate(params, schemas['params']);
+   return {
+      isValidRequest: joiBody.error === null && joiParams.error === null,
+      // TODO: Detailed response
+      verbose: [],
+   };
 };
 
 logger.debug('Utility:Validator start.');

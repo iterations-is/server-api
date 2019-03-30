@@ -27,7 +27,7 @@ router.get(
    '/callback',
    passport.authenticate('github', {
       session: false,
-      failureRedirect: `${configServer.domain}/pages/github/fail`,
+      failureRedirect: `${configServer.domain}/pages/github/failure`,
    }),
    githubCallback,
 );
