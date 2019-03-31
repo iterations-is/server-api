@@ -3,8 +3,17 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+   Column,
+   Entity,
+   JoinColumn,
+   JoinTable,
+   ManyToMany,
+   ManyToOne,
+   PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Iterations } from './Iterations.model';
+import { Parts } from './Parts.model';
 
 @Entity()
 export class Tasks {
@@ -55,4 +64,12 @@ export class Tasks {
       name: 'fk__iterations_id',
    })
    iteration: Iterations;
+
+   @ManyToMany(type => Parts, part => part.tasks)
+   @JoinTable({
+      name: 'task_completes_parts',
+      joinColumns: [{ name: 'fk__tasks_id' }],
+      inverseJoinColumns: [{ name: 'fk__parts_id' }],
+   })
+   parts: Parts[];
 }
