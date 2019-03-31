@@ -1,14 +1,13 @@
 /**
- * @file Iterations Model
+ * @file Tasks Model
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Projects } from './Projects';
-import { Tasks } from './Tasks.model';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Iterations } from './Iterations.model';
 
 @Entity()
-export class Iterations {
+export class Tasks {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -22,25 +21,38 @@ export class Iterations {
    title: string;
 
    @Column({
-      type: 'date',
+      type: 'text',
+      nullable: true,
    })
-   deadline: Date;
+   description: string;
+
+   @Column({
+      name: 'points_min',
+   })
+   pointsMin: number;
+
+   @Column({
+      name: 'points_max',
+   })
+   pointsMax: number;
+
+   @Column({
+      name: 'points_value',
+   })
+   pointsValue: number;
 
    // ----------------------------------------------------------------------------------------------
    // Relations
    // ----------------------------------------------------------------------------------------------
 
    @Column({
-      name: 'fk__projects_id',
+      name: 'fk__iterations_id',
    })
-   projects_id: number;
+   iterations_id: number;
 
-   @ManyToOne(type => Projects, projects => projects.iterations)
+   @ManyToOne(type => Iterations, iteration => iteration.tasks)
    @JoinColumn({
-      name: 'fk__projects_id',
+      name: 'fk__iterations_id',
    })
-   project: Projects;
-
-   @OneToMany(type => Tasks, task => task.iteration)
-   tasks: Tasks[];
+   iteration: Iterations;
 }

@@ -16,7 +16,7 @@ import {
 import { ProjectCategories } from './ProjectCategories.model';
 import { ProjectRoles } from './ProjectRoles.model';
 import { Tags } from './Tags.model';
-import { Iterations } from '@modelsSQL/Iterations.model';
+import { Iterations } from './Iterations.model';
 
 @Entity()
 export class Projects {
