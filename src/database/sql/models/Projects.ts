@@ -16,6 +16,7 @@ import {
 import { ProjectCategories } from './ProjectCategories.model';
 import { ProjectRoles } from './ProjectRoles.model';
 import { Tags } from './Tags.model';
+import { Iterations } from '@modelsSQL/Iterations.model';
 
 @Entity()
 export class Projects {
@@ -69,4 +70,7 @@ export class Projects {
       inverseJoinColumns: [{ name: 'fk__tags_id' }],
    })
    tags: Tags[];
+
+   @OneToMany(type => Iterations, iteration => iteration.project)
+   iterations: Iterations[];
 }
