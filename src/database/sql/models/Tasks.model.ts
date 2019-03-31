@@ -7,13 +7,14 @@ import {
    Column,
    Entity,
    JoinColumn,
-   JoinTable,
    ManyToMany,
    ManyToOne,
+   OneToMany,
    PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Iterations } from './Iterations.model';
 import { Parts } from './Parts.model';
+import { Grades } from './Grades.model';
 
 @Entity()
 export class Tasks {
@@ -54,22 +55,26 @@ export class Tasks {
    // Relations
    // ----------------------------------------------------------------------------------------------
 
+   // Tasks belongs to iteration
+   // ----------------------------------------------------------------------------------------------
    @Column({
-      name: 'fk__iterations_id',
+      name: 'fk__iterations_id__belongs',
    })
    iterations_id: number;
 
    @ManyToOne(type => Iterations, iteration => iteration.tasks)
    @JoinColumn({
-      name: 'fk__iterations_id',
+      name: 'fk__iterations_id__belongs',
    })
    iteration: Iterations;
 
+   // Parts completes tasks
+   // ----------------------------------------------------------------------------------------------
    @ManyToMany(type => Parts, part => part.tasks)
-   @JoinTable({
-      name: 'task_completes_parts',
-      joinColumns: [{ name: 'fk__tasks_id' }],
-      inverseJoinColumns: [{ name: 'fk__parts_id' }],
-   })
    parts: Parts[];
+
+   // Grades
+   // ----------------------------------------------------------------------------------------------
+   @OneToMany(type => Grades, grade => grade.snapshot)
+   grades: Grades[];
 }

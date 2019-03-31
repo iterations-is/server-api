@@ -1,13 +1,13 @@
 /**
- * @file Parts Model
+ * @file Snapshot States Model
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Tasks } from './Tasks.model';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Snapshots } from './Snapshots.model';
 
 @Entity()
-export class Parts {
+export class SnapshotStates {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -16,23 +16,18 @@ export class Parts {
    id: number;
 
    @Column({
-      name: 'nosql_id',
-      type: 'text',
+      type: 'varchar',
+      length: 40,
       unique: true,
    })
-   nosqlId: string;
+   name: string;
 
    // ----------------------------------------------------------------------------------------------
    // Relations
    // ----------------------------------------------------------------------------------------------
 
-   // Parts completes tasks
+   // Snapshots
    // ----------------------------------------------------------------------------------------------
-   @ManyToMany(type => Tasks, task => task.parts)
-   @JoinTable({
-      name: 'parts_completes_tasks',
-      joinColumns: [{ name: 'fk__parts_id' }],
-      inverseJoinColumns: [{ name: 'fk__tasks_id' }],
-   })
-   tasks: Tasks[];
+   @OneToMany(type => Snapshots, snapshot => snapshot.state)
+   snapshots: Snapshots[];
 }

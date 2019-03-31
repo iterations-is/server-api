@@ -1,15 +1,15 @@
 /**
- * @file Iterations Model
+ * @file Grades Model
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Projects } from './Projects';
-import { Tasks } from './Tasks.model';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Snapshots } from './Snapshots.model';
+import { Tasks } from './Tasks.model';
 
 @Entity()
-export class Iterations {
+// @Unique(['namespace', 'key'])
+export class Grades {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -17,40 +17,41 @@ export class Iterations {
    @PrimaryGeneratedColumn()
    id: number;
 
+   @Column()
+   points: number;
+
    @Column({
       type: 'text',
    })
-   title: string;
-
-   @Column({
-      type: 'date',
-   })
-   deadline: Date;
+   message: string;
 
    // ----------------------------------------------------------------------------------------------
    // Relations
    // ----------------------------------------------------------------------------------------------
 
-   // Iteration belongs to project
+   // Grades belongs to snapshot
    // ----------------------------------------------------------------------------------------------
    @Column({
-      name: 'fk__projects_id',
+      name: 'fk__snapshots_id__belongs',
    })
-   projects_id: number;
+   snapshotId: number;
 
-   @ManyToOne(type => Projects, projects => projects.iterations)
+   @ManyToOne(type => Snapshots, snapshots => snapshots.grades)
    @JoinColumn({
-      name: 'fk__projects_id',
+      name: 'fk__snapshots_id__belongs',
    })
-   project: Projects;
+   snapshot: Snapshots;
 
-   // Iterations has many tasks
+   // Grades belongs to task
    // ----------------------------------------------------------------------------------------------
-   @OneToMany(type => Tasks, task => task.iteration)
-   tasks: Tasks[];
+   @Column({
+      name: 'fk__tasks_id__grades',
+   })
+   taskId: number;
 
-   // Iteration has many snapshots
-   // ----------------------------------------------------------------------------------------------
-   @OneToMany(type => Snapshots, snapshot => snapshot.iteration)
-   snapshots: Snapshots[];
+   @ManyToOne(type => Tasks, task => task.grades)
+   @JoinColumn({
+      name: 'fk__tasks_id__grades',
+   })
+   task: Tasks;
 }

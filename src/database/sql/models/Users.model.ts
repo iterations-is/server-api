@@ -17,6 +17,7 @@ import {
 import { GlobalRoles } from './GlobalRoles.model';
 import { ProjectRoles } from './ProjectRoles.model';
 import { Notifications } from './Notifications.model';
+import { Snapshots } from './Snapshots.model';
 
 @Entity({
    name: 'users',
@@ -59,6 +60,8 @@ export class Users {
    // Relations
    // ----------------------------------------------------------------------------------------------
 
+   // User global role
+   // ----------------------------------------------------------------------------------------------
    @ManyToOne(type => GlobalRoles, role => role.users, {
       nullable: false,
    })
@@ -67,6 +70,8 @@ export class Users {
    })
    role: GlobalRoles;
 
+   // User project roles
+   // ----------------------------------------------------------------------------------------------
    @ManyToMany(type => ProjectRoles, projectRoles => projectRoles.users)
    @JoinTable({
       name: 'user_has_project_roles',
@@ -75,6 +80,19 @@ export class Users {
    })
    projectRoles: ProjectRoles[];
 
+   // Notifications
+   // ----------------------------------------------------------------------------------------------
    @OneToMany(type => Notifications, notification => notification.user)
    notifications: Notifications[];
+
+   // Snapshots
+   // ----------------------------------------------------------------------------------------------
+   @OneToMany(type => Snapshots, snapshot => snapshot.createdBy)
+   snapshotsCreated: Snapshots[];
+
+   @OneToMany(type => Snapshots, snapshot => snapshot.sentBy)
+   snapshotsSent: Snapshots[];
+
+   @OneToMany(type => Snapshots, snapshot => snapshot.gradedBy)
+   snapshotsGraded: Snapshots[];
 }
