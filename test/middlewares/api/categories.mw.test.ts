@@ -10,7 +10,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-   await connection.close();
+   // await connection.close();
 });
 
 describe('Middleware / Project Categories', () => {

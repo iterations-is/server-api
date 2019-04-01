@@ -1,14 +1,16 @@
 /**
- * @file Project Categories Model
+ * @file ProjectCategoriesModel
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
 import { Entity, PrimaryGeneratedColumn, Column, Unique, OneToMany } from 'typeorm';
-import { Projects } from './Projects';
+import { ProjectsModel } from './Projects.model';
 
-@Entity()
+@Entity({
+   name: 'project_categories',
+})
 @Unique(['name'])
-export class ProjectCategories {
+export class ProjectCategoriesModel {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -17,8 +19,9 @@ export class ProjectCategories {
    id: number;
 
    @Column({
+      name: 'name',
       type: 'varchar',
-      length: 40,
+      length: 255,
    })
    name: string;
 
@@ -26,6 +29,8 @@ export class ProjectCategories {
    // Relations
    // ----------------------------------------------------------------------------------------------
 
-   @OneToMany(type => Projects, project => project.category)
-   projects: Projects[];
+   // Categories have projects
+   // ----------------------------------------------------------------------------------------------
+   @OneToMany(type => ProjectsModel, project => project.category)
+   projects: ProjectsModel[];
 }

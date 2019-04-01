@@ -1,15 +1,17 @@
 /**
- * @file Iterations Model
+ * @file IterationsModel
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Projects } from './Projects';
-import { Tasks } from './Tasks.model';
-import { Snapshots } from './Snapshots.model';
+import { ProjectsModel } from './Projects.model';
+import { TasksModel } from './Tasks.model';
+import { SnapshotsModel } from './Snapshots.model';
 
-@Entity()
-export class Iterations {
+@Entity({
+   name: 'iterations',
+})
+export class IterationsModel {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -18,11 +20,13 @@ export class Iterations {
    id: number;
 
    @Column({
+      name: 'title',
       type: 'text',
    })
    title: string;
 
    @Column({
+      name: 'deadline',
       type: 'date',
    })
    deadline: Date;
@@ -36,21 +40,21 @@ export class Iterations {
    @Column({
       name: 'fk__projects_id',
    })
-   projects_id: number;
+   projectsId: number;
 
-   @ManyToOne(type => Projects, projects => projects.iterations)
+   @ManyToOne(type => ProjectsModel, projects => projects.iterations)
    @JoinColumn({
       name: 'fk__projects_id',
    })
-   project: Projects;
+   project: ProjectsModel;
 
-   // Iterations has many tasks
+   // IterationsModel has many tasks
    // ----------------------------------------------------------------------------------------------
-   @OneToMany(type => Tasks, task => task.iteration)
-   tasks: Tasks[];
+   @OneToMany(type => TasksModel, task => task.iteration)
+   tasks: TasksModel[];
 
    // Iteration has many snapshots
    // ----------------------------------------------------------------------------------------------
-   @OneToMany(type => Snapshots, snapshot => snapshot.iteration)
-   snapshots: Snapshots[];
+   @OneToMany(type => SnapshotsModel, snapshot => snapshot.iteration)
+   snapshots: SnapshotsModel[];
 }

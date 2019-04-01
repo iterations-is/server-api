@@ -1,13 +1,15 @@
 /**
- * @file Notifications Model
+ * @file NotificationsModel
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { Users } from './Users.model';
+import { UsersModel } from './Users.model';
 
-@Entity()
-export class Notifications {
+@Entity({
+   name: 'notifications',
+})
+export class NotificationsModel {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -16,12 +18,13 @@ export class Notifications {
    id: number;
 
    @Column({
-      type: 'varchar',
+      name: 'message',
+      type: 'text',
    })
    message: string;
 
    @Column({
-      name: 'is_read',
+      name: 'read_state',
       type: 'boolean',
    })
    isRead: boolean;
@@ -33,11 +36,11 @@ export class Notifications {
    @Column({
       name: 'fk__users_id',
    })
-   users_id: number;
+   userId: number;
 
-   @ManyToOne(type => Users, user => user.notifications)
+   @ManyToOne(type => UsersModel, user => user.notifications)
    @JoinColumn({
       name: 'fk__users_id',
    })
-   user: Users;
+   user: UsersModel;
 }

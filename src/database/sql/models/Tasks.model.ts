@@ -1,5 +1,5 @@
 /**
- * @file Tasks Model
+ * @file TasksModel
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
@@ -12,12 +12,14 @@ import {
    OneToMany,
    PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Iterations } from './Iterations.model';
-import { Parts } from './Parts.model';
-import { Grades } from './Grades.model';
+import { IterationsModel } from './Iterations.model';
+import { PartsModel } from './Parts.model';
+import { GradesModel } from './Grades.model';
 
-@Entity()
-export class Tasks {
+@Entity({
+   name: 'tasks',
+})
+export class TasksModel {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -26,11 +28,13 @@ export class Tasks {
    id: number;
 
    @Column({
+      name: 'title',
       type: 'text',
    })
    title: string;
 
    @Column({
+      name: 'description',
       type: 'text',
       nullable: true,
    })
@@ -55,26 +59,26 @@ export class Tasks {
    // Relations
    // ----------------------------------------------------------------------------------------------
 
-   // Tasks belongs to iteration
+   // TasksModel belongs to iteration
    // ----------------------------------------------------------------------------------------------
    @Column({
       name: 'fk__iterations_id__belongs',
    })
    iterations_id: number;
 
-   @ManyToOne(type => Iterations, iteration => iteration.tasks)
+   @ManyToOne(type => IterationsModel, iteration => iteration.tasks)
    @JoinColumn({
       name: 'fk__iterations_id__belongs',
    })
-   iteration: Iterations;
+   iteration: IterationsModel;
 
-   // Parts completes tasks
+   // PartsModel completes tasks
    // ----------------------------------------------------------------------------------------------
-   @ManyToMany(type => Parts, part => part.tasks)
-   parts: Parts[];
+   @ManyToMany(type => PartsModel, part => part.tasks)
+   parts: PartsModel[];
 
-   // Grades
+   // GradesModel
    // ----------------------------------------------------------------------------------------------
-   @OneToMany(type => Grades, grade => grade.snapshot)
-   grades: Grades[];
+   @OneToMany(type => GradesModel, grade => grade.snapshot)
+   grades: GradesModel[];
 }

@@ -1,13 +1,16 @@
 /**
- * @file Parts Model
+ * @file PartsModel
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Tasks } from './Tasks.model';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { TasksModel } from './Tasks.model';
 
-@Entity()
-export class Parts {
+@Entity({
+   name: 'parts',
+})
+@Unique(['nosqlId'])
+export class PartsModel {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -18,7 +21,6 @@ export class Parts {
    @Column({
       name: 'nosql_id',
       type: 'text',
-      unique: true,
    })
    nosqlId: string;
 
@@ -26,13 +28,13 @@ export class Parts {
    // Relations
    // ----------------------------------------------------------------------------------------------
 
-   // Parts completes tasks
+   // PartsModel completes tasks
    // ----------------------------------------------------------------------------------------------
-   @ManyToMany(type => Tasks, task => task.parts)
+   @ManyToMany(type => TasksModel, task => task.parts)
    @JoinTable({
       name: 'parts_completes_tasks',
       joinColumns: [{ name: 'fk__parts_id' }],
       inverseJoinColumns: [{ name: 'fk__tasks_id' }],
    })
-   tasks: Tasks[];
+   tasks: TasksModel[];
 }

@@ -1,5 +1,5 @@
 /**
- * @file Global Roles Model
+ * @file GlobalRolesModel
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
@@ -12,12 +12,14 @@ import {
    JoinTable,
    OneToMany,
 } from 'typeorm';
-import { Permissions } from './Permissions.model';
-import { Users } from './Users.model';
+import { PermissionsModel } from './Permissions.model';
+import { UsersModel } from './Users.model';
 
-@Entity()
+@Entity({
+   name: 'global_roles',
+})
 @Unique(['name'])
-export class GlobalRoles {
+export class GlobalRolesModel {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -26,8 +28,9 @@ export class GlobalRoles {
    id: number;
 
    @Column({
+      name: 'name',
       type: 'varchar',
-      length: 40,
+      length: 255,
    })
    name: string;
 
@@ -35,14 +38,18 @@ export class GlobalRoles {
    // Relations
    // ----------------------------------------------------------------------------------------------
 
-   @OneToMany(type => Users, user => user.role)
-   users: Users[];
+   // Users with Role
+   // ----------------------------------------------------------------------------------------------
+   @OneToMany(type => UsersModel, user => user.role)
+   users: UsersModel[];
 
-   @ManyToMany(type => Permissions, globalRoles => globalRoles.permissions)
+   // Global roles have permissions
+   // ----------------------------------------------------------------------------------------------
+   @ManyToMany(type => PermissionsModel, globalRoles => globalRoles.permissions)
    @JoinTable({
       name: 'role_has_permissions',
       joinColumns: [{ name: 'fk__global_roles_id' }],
       inverseJoinColumns: [{ name: 'fk__permissions_id' }],
    })
-   globalRoles: Permissions[];
+   globalRoles: PermissionsModel[];
 }

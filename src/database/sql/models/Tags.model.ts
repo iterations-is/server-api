@@ -1,13 +1,16 @@
 /**
- * @file Tags Model
+ * @file TagsModel
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Projects } from './Projects';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { ProjectsModel } from './Projects.model';
 
-@Entity()
-export class Tags {
+@Entity({
+   name: 'tags',
+})
+@Unique(['name'])
+export class TagsModel {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -16,9 +19,9 @@ export class Tags {
    id: number;
 
    @Column({
+      name: 'name',
       type: 'varchar',
-      length: 40,
-      unique: true,
+      length: 255,
    })
    name: string;
 
@@ -26,6 +29,8 @@ export class Tags {
    // Relations
    // ----------------------------------------------------------------------------------------------
 
-   @ManyToMany(type => Projects, projects => projects.tags)
-   projects: Projects[];
+   // Tags have projects
+   // ----------------------------------------------------------------------------------------------
+   @ManyToMany(type => ProjectsModel, projects => projects.tags)
+   projects: ProjectsModel[];
 }

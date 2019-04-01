@@ -4,8 +4,8 @@
  */
 
 import { getConnection } from '@utils/typeorm.util';
-import { Projects } from '@modelsSQL/Projects';
-import { ProjectCategories } from '@modelsSQL/ProjectCategories.model';
+import { ProjectsModel } from '@modelsSQL/Projects.model';
+import { ProjectCategoriesModel } from '@modelsSQL/ProjectCategories.model';
 import { responseData, responseInvalidData, responseSimple } from '@utils/response.util';
 import { validateRequestJoi } from '@utils/validator.util';
 
@@ -38,7 +38,7 @@ export const mwPatchProjectCategory = async (req, res, next) => {
    if (!isValidRequest) return responseInvalidData(res, 422, 'Invalid data.', verbose);
 
    const connection = getConnection();
-   const repoProjectCategories = connection.getRepository(ProjectCategories);
+   const repoProjectCategories = connection.getRepository(ProjectCategoriesModel);
 
    let category;
    try {
@@ -77,8 +77,8 @@ export const mwDeleteProjectCategory = async (req, res, next) => {
    if (!isValidRequest) return responseInvalidData(res, 422, 'Invalid data.', verbose);
 
    const connection = getConnection();
-   const repoProjects = connection.getRepository(Projects);
-   const repoProjectCategories = connection.getRepository(ProjectCategories);
+   const repoProjects = connection.getRepository(ProjectsModel);
+   const repoProjectCategories = connection.getRepository(ProjectCategoriesModel);
 
    let category;
    try {

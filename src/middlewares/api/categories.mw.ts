@@ -4,7 +4,7 @@
  */
 
 import { getConnection } from '@utils/typeorm.util';
-import { ProjectCategories } from '@modelsSQL/ProjectCategories.model';
+import { ProjectCategoriesModel } from '@modelsSQL/ProjectCategories.model';
 import { responseData, responseInvalidData, responseSimple } from '@utils/response.util';
 import { validateRequestJoi } from '@utils/validator.util';
 
@@ -18,7 +18,7 @@ const joi = require('joi');
  */
 export const mwGetProjectCategories = async (req, res, next) => {
    const connection = getConnection();
-   const repoProjectCategories = connection.getRepository(ProjectCategories);
+   const repoProjectCategories = connection.getRepository(ProjectCategoriesModel);
 
    try {
       const categories = await repoProjectCategories.find();
@@ -50,9 +50,9 @@ export const mwCreateProjectCategory = async (req, res, next) => {
    if (!isValidRequest) return responseInvalidData(res, 422, 'Invalid data.', verbose);
 
    const connection = getConnection();
-   const repoProjectCategories = connection.getRepository(ProjectCategories);
+   const repoProjectCategories = connection.getRepository(ProjectCategoriesModel);
 
-   const category = new ProjectCategories();
+   const category = new ProjectCategoriesModel();
    category.name = req.body.name;
 
    try {

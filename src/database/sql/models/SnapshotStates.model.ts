@@ -1,13 +1,16 @@
 /**
- * @file Snapshot States Model
+ * @file SnapshotStatesModel
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Snapshots } from './Snapshots.model';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { SnapshotsModel } from './Snapshots.model';
 
-@Entity()
-export class SnapshotStates {
+@Entity({
+   name: 'snapshot_states',
+})
+@Unique(['name'])
+export class SnapshotStatesModel {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -16,9 +19,9 @@ export class SnapshotStates {
    id: number;
 
    @Column({
+      name: 'name',
       type: 'varchar',
-      length: 40,
-      unique: true,
+      length: 255,
    })
    name: string;
 
@@ -26,8 +29,8 @@ export class SnapshotStates {
    // Relations
    // ----------------------------------------------------------------------------------------------
 
-   // Snapshots
+   // SnapshotsModel
    // ----------------------------------------------------------------------------------------------
-   @OneToMany(type => Snapshots, snapshot => snapshot.state)
-   snapshots: Snapshots[];
+   @OneToMany(type => SnapshotsModel, snapshot => snapshot.state)
+   snapshots: SnapshotsModel[];
 }

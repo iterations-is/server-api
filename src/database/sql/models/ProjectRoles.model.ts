@@ -1,5 +1,5 @@
 /**
- * @file Project Roles Model
+ * @file ProjectRolesModel
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
@@ -12,12 +12,14 @@ import {
    ManyToOne,
    JoinColumn,
 } from 'typeorm';
-import { Projects } from './Projects';
-import { Users } from './Users.model';
+import { ProjectsModel } from './Projects.model';
+import { UsersModel } from './Users.model';
 
-@Entity()
+@Entity({
+   name: 'project_roles',
+})
 @Unique(['name'])
-export class ProjectRoles {
+export class ProjectRolesModel {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -25,12 +27,16 @@ export class ProjectRoles {
    @PrimaryGeneratedColumn()
    id: number;
 
-   @Column()
+   @Column({
+      name: 'editable_state',
+      type: 'boolean',
+   })
    isEditable: boolean;
 
    @Column({
+      name: 'name',
       type: 'varchar',
-      length: 40,
+      length: 255,
    })
    name: string;
 
@@ -38,12 +44,21 @@ export class ProjectRoles {
    // Relations
    // ----------------------------------------------------------------------------------------------
 
-   @ManyToOne(type => Projects, project => project.roles)
+   // Projects roles belongs to project
+   // ----------------------------------------------------------------------------------------------
+   @Column({
+      name: 'fk__projects_id',
+   })
+   projectId: number;
+
+   @ManyToOne(type => ProjectsModel, project => project.roles)
    @JoinColumn({
       name: 'fk__projects_id',
    })
-   project: Projects;
+   project: ProjectsModel;
 
-   @ManyToMany(type => Users, users => users.projectRoles)
-   users: Users[];
+   // Project role has users
+   // ----------------------------------------------------------------------------------------------
+   @ManyToMany(type => UsersModel, users => users.projectRoles)
+   users: UsersModel[];
 }

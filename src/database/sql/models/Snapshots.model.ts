@@ -1,16 +1,18 @@
 /**
- * @file Snapshots Model
+ * @file SnapshotsModel
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Iterations } from './Iterations.model';
-import { Users } from './Users.model';
-import { SnapshotStates } from './SnapshotStates.model';
-import { Grades } from './Grades.model';
+import { IterationsModel } from './Iterations.model';
+import { UsersModel } from './Users.model';
+import { SnapshotStatesModel } from './SnapshotStates.model';
+import { GradesModel } from './Grades.model';
 
-@Entity()
-export class Snapshots {
+@Entity({
+   name: 'snapshots',
+})
+export class SnapshotsModel {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -18,11 +20,11 @@ export class Snapshots {
    @PrimaryGeneratedColumn()
    id: number;
 
-   // @Column({
-   //    name: 'date_graded',
-   //    type: 'date',
-   // })
-   // dateGraded: Date;
+   @Column({
+      name: 'date_graded',
+      type: 'date',
+   })
+   dateGraded: Date;
 
    @Column({
       name: 'parts_list_json',
@@ -41,11 +43,11 @@ export class Snapshots {
    })
    stateId: number;
 
-   @ManyToOne(type => SnapshotStates, snapshotState => snapshotState.snapshots)
+   @ManyToOne(type => SnapshotStatesModel, snapshotState => snapshotState.snapshots)
    @JoinColumn({
       name: 'fk__snapshot_states_id',
    })
-   state: SnapshotStates;
+   state: SnapshotStatesModel;
 
    // Snapshot belongs to iteration
    // ----------------------------------------------------------------------------------------------
@@ -54,11 +56,11 @@ export class Snapshots {
    })
    iterationsId: number;
 
-   @ManyToOne(type => Iterations, iteration => iteration.snapshots)
+   @ManyToOne(type => IterationsModel, iteration => iteration.snapshots)
    @JoinColumn({
       name: 'fk__iterations_id__belongs',
    })
-   iteration: Iterations;
+   iteration: IterationsModel;
 
    // Snapshot is created by
    // ----------------------------------------------------------------------------------------------
@@ -67,11 +69,11 @@ export class Snapshots {
    })
    createdByUserId: number;
 
-   @ManyToOne(type => Users, user => user.snapshotsCreated)
+   @ManyToOne(type => UsersModel, user => user.snapshotsCreated)
    @JoinColumn({
       name: 'fk__users_id__created_by',
    })
-   createdBy: Users;
+   createdBy: UsersModel;
 
    // Snapshot is sent by
    // ----------------------------------------------------------------------------------------------
@@ -80,11 +82,11 @@ export class Snapshots {
    })
    sentByUserId: number;
 
-   @ManyToOne(type => Users, user => user.snapshotsSent)
+   @ManyToOne(type => UsersModel, user => user.snapshotsSent)
    @JoinColumn({
       name: 'fk__users_id__sent_by',
    })
-   sentBy: Users;
+   sentBy: UsersModel;
 
    // Snapshot is graded by
    // ----------------------------------------------------------------------------------------------
@@ -93,14 +95,14 @@ export class Snapshots {
    })
    gradedByUserId: number;
 
-   @ManyToOne(type => Users, user => user.snapshotsGraded)
+   @ManyToOne(type => UsersModel, user => user.snapshotsGraded)
    @JoinColumn({
       name: 'fk__users_id__graded_by',
    })
-   gradedBy: Users;
+   gradedBy: UsersModel;
 
-   // Grades
+   // GradesModel
    // ----------------------------------------------------------------------------------------------
-   @OneToMany(type => Grades, grade => grade.snapshot)
-   grades: Grades[];
+   @OneToMany(type => GradesModel, grade => grade.snapshot)
+   grades: GradesModel[];
 }
