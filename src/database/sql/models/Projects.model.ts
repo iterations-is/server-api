@@ -60,6 +60,12 @@ export class ProjectsModel {
    })
    isSearchable: boolean;
 
+   @Column({
+      name: 'public_state',
+      type: 'boolean',
+   })
+   isPublic: boolean;
+
    // ----------------------------------------------------------------------------------------------
    // Relations
    // ----------------------------------------------------------------------------------------------
@@ -77,11 +83,13 @@ export class ProjectsModel {
    })
    category: ProjectCategoriesModel;
 
-   // Project have project rolestt
+   // Project have project roles
    // ----------------------------------------------------------------------------------------------
    @OneToMany(type => ProjectRolesModel, role => role.project)
    roles: ProjectRolesModel[];
 
+   // Tags
+   // ----------------------------------------------------------------------------------------------
    @ManyToMany(type => TagsModel, tags => tags.projects)
    @JoinTable({
       name: 'project_has_tags',
@@ -90,6 +98,8 @@ export class ProjectsModel {
    })
    tags: TagsModel[];
 
+   // Iterations
+   // ----------------------------------------------------------------------------------------------
    @OneToMany(type => IterationsModel, iteration => iteration.project)
    iterations: IterationsModel[];
 }
