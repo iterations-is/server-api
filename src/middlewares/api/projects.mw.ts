@@ -71,6 +71,7 @@ export const mwCreateProject = async (req, res, next) => {
    project.descriptionPublic = req.body.descriptionPublic;
    project.descriptionPrivate = req.body.descriptionPrivate;
    project.isArchived = false;
+   project.isDeleted = false;
    project.isSearchable = req.body.isSearchable;
    project.isPublic = req.body.isPublic;
    project.category = category;
