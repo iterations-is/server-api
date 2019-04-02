@@ -1,24 +1,17 @@
 /**
- * @file ProjectRolesModel
+ * @file IterationsModel
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import {
-   Entity,
-   PrimaryGeneratedColumn,
-   Column,
-   Unique,
-   ManyToMany,
-   ManyToOne,
-   JoinColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ProjectsModel } from './Projects.model';
-import { UsersModel } from './Users.model';
+import { TasksModel } from './Tasks.model';
+import { SnapshotsModel } from './Snapshots.model';
 
 @Entity({
-   name: 'project_roles',
+   name: 'iterations',
 })
-export class ProjectRolesModel {
+export class IterationsModel {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -27,37 +20,41 @@ export class ProjectRolesModel {
    id: number;
 
    @Column({
-      name: 'editable_state',
-      type: 'boolean',
+      name: 'title',
+      type: 'text',
    })
-   isEditable: boolean;
+   title: string;
 
    @Column({
-      name: 'name',
-      type: 'varchar',
-      length: 255,
+      name: 'deadline',
+      type: 'date',
    })
-   name: string;
+   deadline: Date;
 
    // ----------------------------------------------------------------------------------------------
    // Relations
    // ----------------------------------------------------------------------------------------------
 
-   // Projects roles belongs to project
+   // Iteration belongs to project
    // ----------------------------------------------------------------------------------------------
    @Column({
       name: 'fk__projects_id',
    })
-   projectId: number;
+   projectsId: number;
 
-   @ManyToOne(type => ProjectsModel, project => project.roles)
+   @ManyToOne(type => ProjectsModel, projects => projects.iterations)
    @JoinColumn({
       name: 'fk__projects_id',
    })
    project: ProjectsModel;
 
-   // Project role has users
+   // IterationsModel has many tasks
    // ----------------------------------------------------------------------------------------------
-   @ManyToMany(type => UsersModel, users => users.projectRoles)
-   users: UsersModel[];
+   @OneToMany(type => TasksModel, task => task.iteration)
+   tasks: TasksModel[];
+
+   // Iteration has many snapshots
+   // ----------------------------------------------------------------------------------------------
+   @OneToMany(type => SnapshotsModel, snapshot => snapshot.iteration)
+   snapshots: SnapshotsModel[];
 }

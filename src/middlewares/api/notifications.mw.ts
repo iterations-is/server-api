@@ -1,11 +1,11 @@
 /**
- * @file Notifications
+ * @file NotificationsModel
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
 import { getConnection } from '@utils/typeorm.util';
-import { Notifications } from '@modelsSQL/Notifications.model';
-import { Users } from '@modelsSQL/Users.model';
+import { NotificationsModel } from '@modelsSQL/Notifications.model';
+import { UsersModel } from '@modelsSQL/Users.model';
 import { responseData, responseSimple } from '@utils/response.util';
 
 /**
@@ -16,8 +16,8 @@ import { responseData, responseSimple } from '@utils/response.util';
  */
 export const mwGetUserNotifications = async (req, res, next) => {
    const connection = getConnection();
-   const repoUsers = connection.getRepository(Users);
-   const repoNotifications = connection.getRepository(Notifications);
+   const repoUsers = connection.getRepository(UsersModel);
+   const repoNotifications = connection.getRepository(NotificationsModel);
 
    try {
       const user = await repoUsers.findOne(req.jwt.user_id);

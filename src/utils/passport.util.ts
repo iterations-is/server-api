@@ -5,8 +5,8 @@
  */
 
 import { getConnection } from '@utils/typeorm.util';
-import { Users } from '@modelsSQL/Users.model';
-import { GlobalRoles } from '@modelsSQL/GlobalRoles.model';
+import { UsersModel } from '@modelsSQL/Users.model';
+import { GlobalRolesModel } from '@modelsSQL/GlobalRoles.model';
 import configOAuth from '@config/oauth.config';
 import logger from '@utils/logger.util';
 
@@ -31,7 +31,7 @@ passport.use(
          const responseId = profile.id;
          const responseUsername = profile.username;
          const responseName = profile._json.name;
-         const sqlRepoUser = getConnection().getRepository(Users);
+         const sqlRepoUser = getConnection().getRepository(UsersModel);
 
          // Try to find existing user
          try {
@@ -43,9 +43,9 @@ passport.use(
             });
 
             // Update if need
-            if (user.auth_name !== responseName || user.auth_username !== responseUsername) {
-               user.auth_username = responseUsername;
-               user.auth_name = responseName;
+            if (user.authName !== responseName || user.authUsername !== responseUsername) {
+               user.authUsername = responseUsername;
+               user.authName = responseName;
 
                try {
                   await sqlRepoUser.save(user);
@@ -61,14 +61,14 @@ passport.use(
 
             // Get user role
             const role = await getConnection()
-               .getRepository(GlobalRoles)
+               .getRepository(GlobalRolesModel)
                .findOne({ where: { name: 'user' } });
 
-            let user = new Users();
-            user.auth_id = responseId;
-            user.auth_type = configOAuth.github.uniqueName;
-            user.auth_username = responseUsername;
-            user.auth_name = responseName;
+            let user = new UsersModel();
+            user.authId = responseId;
+            user.authType = configOAuth.github.uniqueName;
+            user.authUsername = responseUsername;
+            user.authName = responseName;
             user.role = role;
 
             try {

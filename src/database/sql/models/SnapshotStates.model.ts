@@ -1,16 +1,16 @@
 /**
- * @file TagsModel
+ * @file SnapshotStatesModel
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import { Column, Entity, ManyToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
-import { ProjectsModel } from './Projects.model';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { SnapshotsModel } from './Snapshots.model';
 
 @Entity({
-   name: 'tags',
+   name: 'snapshot_states',
 })
 @Unique(['name'])
-export class TagsModel {
+export class SnapshotStatesModel {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -29,8 +29,8 @@ export class TagsModel {
    // Relations
    // ----------------------------------------------------------------------------------------------
 
-   // Tags have projects
+   // SnapshotsModel
    // ----------------------------------------------------------------------------------------------
-   @ManyToMany(type => ProjectsModel, projects => projects.tags)
-   projects: ProjectsModel[];
+   @OneToMany(type => SnapshotsModel, snapshot => snapshot.state)
+   snapshots: SnapshotsModel[];
 }

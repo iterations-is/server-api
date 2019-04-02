@@ -4,7 +4,7 @@
  */
 
 import { getConnection } from '@utils/typeorm.util';
-import { Notifications } from '@modelsSQL/Notifications.model';
+import { NotificationsModel } from '@modelsSQL/Notifications.model';
 import { responseData, responseInvalidData, responseSimple } from '@utils/response.util';
 import { validateRequestJoi } from '@utils/validator.util';
 
@@ -31,13 +31,13 @@ export const mwPatchNotificationsRead = async (req, res, next) => {
    if (!isValidRequest) return responseInvalidData(res, 422, 'Invalid data.', verbose);
 
    const connection = getConnection();
-   const repoNotifications = connection.getRepository(Notifications);
+   const repoNotifications = connection.getRepository(NotificationsModel);
 
    // Try to change user notification
    try {
       const notification = await repoNotifications.findOneOrFail(req.params.id_notification);
       // Current user is not the owner
-      if (notification.users_id !== req.jwt.user_id)
+      if (notification.userId !== req.jwt.user_id)
          return responseInvalidData(res, 403, 'Forbidden', []);
 
       // Patch
@@ -72,13 +72,13 @@ export const mwDeleteNotification = async (req, res, next) => {
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseInvalidData(res, 422, 'Invalid data.', verbose);
    const connection = getConnection();
-   const repoNotifications = connection.getRepository(Notifications);
+   const repoNotifications = connection.getRepository(NotificationsModel);
 
    // Try to remove user notification
    try {
       const notification = await repoNotifications.findOneOrFail(req.params.id_notification);
       // Current user is not the owner
-      if (notification.users_id !== req.jwt.user_id)
+      if (notification.userId !== req.jwt.user_id)
          return responseInvalidData(res, 403, 'Forbidden', []);
 
       // Delete

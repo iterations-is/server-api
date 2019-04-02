@@ -1,5 +1,5 @@
 /**
- * @file Users Model
+ * @file UsersModel
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
@@ -14,15 +14,16 @@ import {
    JoinTable,
    OneToMany,
 } from 'typeorm';
-import { GlobalRoles } from './GlobalRoles.model';
-import { ProjectRoles } from './ProjectRoles.model';
-import { Notifications } from './Notifications.model';
+import { GlobalRolesModel } from './GlobalRoles.model';
+import { ProjectRolesModel } from './ProjectRoles.model';
+import { NotificationsModel } from './Notifications.model';
+import { SnapshotsModel } from './Snapshots.model';
 
 @Entity({
    name: 'users',
 })
-@Unique(['auth_id', 'auth_type'])
-export class Users {
+@Unique(['authId', 'authType'])
+export class UsersModel {
    // ----------------------------------------------------------------------------------------------
    // Attributes
    // ----------------------------------------------------------------------------------------------
@@ -31,50 +32,71 @@ export class Users {
    id: number;
 
    @Column({
+      name: 'auth_id',
       type: 'int',
    })
-   auth_id: number;
+   authId: number;
 
    @Column({
+      name: 'auth_type',
       type: 'varchar',
-      length: 40,
+      length: 255,
    })
-   auth_type: string;
+   authType: string;
 
    @Column({
+      name: 'auth_username',
       type: 'varchar',
-      length: 40,
+      length: 255,
       nullable: true,
    })
-   auth_username: string;
+   authUsername: string;
 
    @Column({
+      name: 'auth_name',
       type: 'varchar',
-      length: 80,
+      length: 255,
       nullable: true,
    })
-   auth_name: string;
+   authName: string;
 
    // ----------------------------------------------------------------------------------------------
    // Relations
    // ----------------------------------------------------------------------------------------------
 
-   @ManyToOne(type => GlobalRoles, role => role.users, {
+   // User global role
+   // ----------------------------------------------------------------------------------------------
+   @ManyToOne(type => GlobalRolesModel, role => role.users, {
       nullable: false,
    })
    @JoinColumn({
       name: 'fk__global_roles_id',
    })
-   role: GlobalRoles;
+   role: GlobalRolesModel;
 
-   @ManyToMany(type => ProjectRoles, projectRoles => projectRoles.users)
+   // User project roles
+   // ----------------------------------------------------------------------------------------------
+   @ManyToMany(type => ProjectRolesModel, projectRoles => projectRoles.users)
    @JoinTable({
       name: 'user_has_project_roles',
       joinColumns: [{ name: 'fk__users_id' }],
       inverseJoinColumns: [{ name: 'fk__project_roles_id' }],
    })
-   projectRoles: ProjectRoles[];
+   projectRoles: ProjectRolesModel[];
 
-   @OneToMany(type => Notifications, notification => notification.user)
-   notifications: Notifications[];
+   // NotificationsModel
+   // ----------------------------------------------------------------------------------------------
+   @OneToMany(type => NotificationsModel, notification => notification.user)
+   notifications: NotificationsModel[];
+
+   // SnapshotsModel
+   // ----------------------------------------------------------------------------------------------
+   @OneToMany(type => SnapshotsModel, snapshot => snapshot.createdBy)
+   snapshotsCreated: SnapshotsModel[];
+
+   @OneToMany(type => SnapshotsModel, snapshot => snapshot.sentBy)
+   snapshotsSent: SnapshotsModel[];
+
+   @OneToMany(type => SnapshotsModel, snapshot => snapshot.gradedBy)
+   snapshotsGraded: SnapshotsModel[];
 }
