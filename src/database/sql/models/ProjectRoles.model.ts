@@ -18,7 +18,6 @@ import { UsersModel } from './Users.model';
 @Entity({
    name: 'project_roles',
 })
-@Unique(['name'])
 export class ProjectRolesModel {
    // ----------------------------------------------------------------------------------------------
    // Attributes
