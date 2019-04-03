@@ -7,6 +7,7 @@
 import configServer from '@config/server.config';
 import { redisSetTokenIntoStorage } from '@utils/redis.util';
 import { validateTokenTemporary } from '@utils/validator.util';
+import { getManager } from '@utils/typeorm.util';
 
 const express = require('express');
 const router = express.Router();
@@ -64,17 +65,27 @@ async function githubCallback(req, res) {
    // Successful authentication from OAuth server
    const tokenTmp = req.session.tokenTmp;
    const userID = req.user.id;
-   const authID = req.user.auth_id;
-   const authType = req.user.auth_type;
+   const authID = req.user.authId;
+   const authType = req.user.authType;
 
    // Destroy session
    req.session = null;
+
+   const permissionsView: object[] = await getManager().query(
+      `SELECT * FROM view_user_permissions WHERE user_id=${req.user.id}`,
+   );
+
+   let permissionsPure: string[] = [];
+
+   permissionsView.forEach((item: object) => {
+      permissionsPure.push(item['permission_namespace'] + '.' + item['key_namespace']);
+   });
 
    // Validate temporary token
    if (!validateTokenTemporary(tokenTmp)) return res.send('Sorry, no temporary token provided.');
 
    // Create permanent token and save it to db
-   redisSetTokenIntoStorage(tokenTmp, userID, authID, authType).then(() => {
+   redisSetTokenIntoStorage(tokenTmp, userID, authID, authType, permissionsPure).then(() => {
       // Successful authorization
       res.send('Successful authorization, you can close this window.');
    });
