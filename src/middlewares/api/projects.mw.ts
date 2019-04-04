@@ -44,7 +44,7 @@ export const mwCreateProject = async (req, res, next) => {
    try {
       user = await repoUsers.findOneOrFail({
          where: {
-            id: req.jwt.user_id,
+            id: req.jwt.userId,
          },
       });
    } catch (e) {
