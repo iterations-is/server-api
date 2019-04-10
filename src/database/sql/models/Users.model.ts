@@ -23,6 +23,7 @@ import { SnapshotsModel } from './Snapshots.model';
    name: 'users',
 })
 @Unique(['authId', 'authType'])
+@Unique(['authUsername'])
 export class UsersModel {
    // ----------------------------------------------------------------------------------------------
    // Attributes
