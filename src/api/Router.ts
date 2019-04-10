@@ -3,6 +3,7 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
+import routeDashboard from './dashboard.router';
 import routeNotification from './notification.router';
 import routeNotifications from './notifications.router';
 import routePing from './ping.router';
@@ -13,6 +14,7 @@ import routerToken from './token.router';
 const express = require('express');
 const router = express.Router();
 
+router.use('/dashboard', routeDashboard);
 router.use('/notification', routeNotification);
 router.use('/notifications', routeNotifications);
 router.use('/ping', routePing);

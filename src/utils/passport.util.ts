@@ -43,10 +43,8 @@ passport.use(
             });
 
             // Update if need
-            if (user.authName !== responseName || user.authUsername !== responseUsername) {
-               user.authUsername = responseUsername;
+            if (user.authName !== responseName) {
                user.authName = responseName;
-
                try {
                   await sqlRepoUser.save(user);
                } catch (e) {
@@ -67,7 +65,7 @@ passport.use(
             let user = new UsersModel();
             user.authId = responseId;
             user.authType = configOAuth.github.uniqueName;
-            user.authUsername = responseUsername;
+            user.authUsername = `${responseUsername}-g${responseId}`;
             user.authName = responseName;
             user.role = role;
 
