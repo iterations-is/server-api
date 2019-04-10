@@ -22,6 +22,9 @@ export const mwGetUserNotifications = async (req, res, next) => {
    try {
       const user = await repoUsers.findOne(req.jwt.userId);
       const notifications = await repoNotifications.find({
+         order: {
+            id: 'ASC',
+         },
          where: {
             user: user,
          },
