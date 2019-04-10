@@ -37,7 +37,7 @@ export const mwPatchNotificationsRead = async (req, res, next) => {
    try {
       const notification = await repoNotifications.findOneOrFail(req.params.id_notification);
       // Current user is not the owner
-      if (notification.userId !== req.jwt.user_id)
+      if (notification.userId !== req.jwt.userId)
          return responseInvalidData(res, 403, 'Forbidden', []);
 
       // Patch
@@ -78,7 +78,7 @@ export const mwDeleteNotification = async (req, res, next) => {
    try {
       const notification = await repoNotifications.findOneOrFail(req.params.id_notification);
       // Current user is not the owner
-      if (notification.userId !== req.jwt.user_id)
+      if (notification.userId !== req.jwt.userId)
          return responseInvalidData(res, 403, 'Forbidden', []);
 
       // Delete

@@ -37,11 +37,13 @@ export async function redisSetTokenIntoStorage(
    userID: number,
    authID: number,
    authType: string,
+   permissions: string[],
 ) {
    const token = generateTokenJWT({
-      user_id: userID,
-      auth_id: authID,
-      auth_type: authType,
+      userId: userID,
+      authId: authID,
+      authType: authType,
+      permissions: permissions,
    });
 
    await redisClientAsync.set(tokenTmp, token, 'EX', configDatabase.redis.expirationTokenStorage);

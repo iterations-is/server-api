@@ -12,7 +12,7 @@ import { responseSimple } from '@utils/response.util';
 
 export default (permissions: string[]) => {
    return async (req, res, next) => {
-      // Check if user with ID req.jwt.id has required permissions
+      // Check if user with ID req.jwt.userId has required permissions
 
       /*
        * [
@@ -24,7 +24,7 @@ export default (permissions: string[]) => {
        * ]
        */
       const permissionsView: object[] = await getManager().query(
-         `SELECT * FROM view_user_permissions WHERE user_id=${req.jwt.user_id}`,
+         `SELECT * FROM view_user_permissions WHERE user_id=${req.jwt.userId}`,
       );
 
       let permissionsPure: string[] = [];
