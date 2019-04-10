@@ -3,7 +3,14 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+   Entity,
+   PrimaryGeneratedColumn,
+   Column,
+   ManyToOne,
+   JoinColumn,
+   CreateDateColumn,
+} from 'typeorm';
 import { UsersModel } from './Users.model';
 
 @Entity({
@@ -28,6 +35,12 @@ export class NotificationsModel {
       type: 'boolean',
    })
    isRead: boolean;
+
+   @CreateDateColumn({
+      name: 'created_at',
+      type: 'timestamptz',
+   })
+   createdAt: Date;
 
    // ----------------------------------------------------------------------------------------------
    // Relations
