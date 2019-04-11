@@ -9,7 +9,7 @@ const joi = require('joi');
 
 interface joiValidationResponse {
    isValidRequest: boolean;
-   verbose: string[];
+   verbose: object;
 }
 
 /**
@@ -43,8 +43,10 @@ export const validateRequestJoi = (
       schemas['params'] === null ? { error: null } : joi.validate(params, schemas['params']);
    return {
       isValidRequest: joiBody.error === null && joiParams.error === null,
-      // TODO: Detailed response
-      verbose: [],
+      verbose: {
+         bodyVerbose: joiBody.error,
+         paramsVerbose: joiParams.error,
+      },
    };
 };
 
