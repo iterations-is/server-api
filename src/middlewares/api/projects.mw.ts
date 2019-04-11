@@ -10,6 +10,7 @@ import { ProjectsModel } from '@modelsSQL/Projects.model';
 import { ProjectCategoriesModel } from '@modelsSQL/ProjectCategories.model';
 import logger from '@utils/logger.util';
 import { UsersModel } from '@modelsSQL/Users.model';
+import { dbCreateNotifications } from '@utils/notifications.util';
 
 const joi = require('joi');
 
@@ -142,7 +143,14 @@ export const mwCreateProjectTransaction = async (req, res, next) => {
          await transactionalEntityManager.save(req.iterations.createProject.tasks);
       });
 
-      return responseData(res, 200, 'Project was created.', {});
+      await dbCreateNotifications(
+         `Your project "${req.iterations.createProject.project.name}" was created!`,
+         [req.iterations.createProject.user],
+      );
+
+      return responseData(res, 200, 'Project was created.', {
+         projectID: req.iterations.createProject.project.id,
+      });
    } catch (e) {
       logger.error(e);
 
