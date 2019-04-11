@@ -25,8 +25,8 @@ export const mwCreateProject = async (req, res, next) => {
       body: joi.object().keys({
          name: joi.string().required(),
 
-         descriptionPublic: joi.string().required(),
-         descriptionPrivate: joi.string().required(),
+         descriptionPublic: joi.string().allow(''),
+         descriptionPrivate: joi.string().allow(''),
 
          isSearchable: joi.boolean().required(),
          isPublic: joi.boolean().required(),
