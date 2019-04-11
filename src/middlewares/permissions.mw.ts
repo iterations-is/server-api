@@ -13,6 +13,7 @@ import { responseSimple } from '@utils/response.util';
 export default (permissions: string[]) => {
    return async (req, res, next) => {
       // Check if user with ID req.jwt.userId has required permissions
+      if (permissions.length === 0) return next();
 
       /*
        * [
