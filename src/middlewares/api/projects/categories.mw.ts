@@ -47,7 +47,7 @@ export const mwCreateProjectCategory = async (req, res, next) => {
       params: null,
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
-   if (!isValidRequest) return responseInvalidData(res, 422, 'Invalid data.', verbose);
+   if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
 
    const connection = getConnection();
    const repoProjectCategories = connection.getRepository(ProjectCategoriesModel);

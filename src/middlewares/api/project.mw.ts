@@ -28,7 +28,7 @@ export const mwDeleteProject = async (req, res, next) => {
       }),
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
-   if (!isValidRequest) return responseInvalidData(res, 422, 'Invalid data.', verbose);
+   if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
 
    const repoProjects = getConnection().getRepository(ProjectsModel);
 

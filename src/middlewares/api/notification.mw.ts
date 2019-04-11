@@ -28,7 +28,7 @@ export const mwPatchNotificationsRead = async (req, res, next) => {
       }),
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
-   if (!isValidRequest) return responseInvalidData(res, 422, 'Invalid data.', verbose);
+   if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
 
    const connection = getConnection();
    const repoNotifications = connection.getRepository(NotificationsModel);
@@ -70,7 +70,7 @@ export const mwDeleteNotification = async (req, res, next) => {
       }),
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
-   if (!isValidRequest) return responseInvalidData(res, 422, 'Invalid data.', verbose);
+   if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
    const connection = getConnection();
    const repoNotifications = connection.getRepository(NotificationsModel);
 
