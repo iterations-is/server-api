@@ -13,10 +13,10 @@ export const mwSearchProjects = async (req, res, next) => {
    // Request data validation
    const schemas = {
       body: joi.object().keys({
-         category: joi.number().required(),
-         isArchived: joi.boolean().required(),
-         isPublic: joi.boolean().required(),
-         hasOpenVacancies: joi.boolean().required(),
+         category: joi.number().optional(),
+         isArchived: joi.boolean().optional(),
+         isPublic: joi.boolean().optional(),
+         hasOpenVacancies: joi.boolean().optional(),
       }),
       params: null,
    };
@@ -27,16 +27,28 @@ export const mwSearchProjects = async (req, res, next) => {
    const repoProjects = connection.getRepository(ProjectsModel);
 
    try {
-      const projects = await repoProjects.find({
+      let where = {};
+      if (req.body.category !== undefined) where['categoryId'] = req.body.category;
+      if (req.body.isArchived !== undefined) where['isArchived'] = req.body.isArchived;
+      if (req.body.isPublic !== undefined) where['isPublic'] = req.body.isPublic;
+      if (req.body.hasOpenVacancies !== undefined)
+         where['hasOpenVacancies'] = req.body.hasOpenVacancies;
+
+      const projects = await repoProjects.findAndCount({
          where: {
-            categoryId: req.body.category,
-            isArchived: req.body.isArchived,
-            isPublic: req.body.isPublic,
-            hasOpenVacancies: req.body.hasOpenVacancies,
+            ...where,
             isSearchable: true,
             isDeleted: false,
          },
-         select: ['id', 'descriptionPublic', 'isArchived', 'isPublic', 'hasOpenVacancies'],
+         select: [
+            'id',
+            'name',
+            'descriptionPublic',
+            'isArchived',
+            'isPublic',
+            'hasOpenVacancies',
+            'createdAt',
+         ],
          relations: ['tags', 'category'],
       });
 

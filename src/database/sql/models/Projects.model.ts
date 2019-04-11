@@ -5,6 +5,7 @@
 
 import {
    Column,
+   CreateDateColumn,
    Entity,
    JoinColumn,
    JoinTable,
@@ -77,6 +78,12 @@ export class ProjectsModel {
       type: 'boolean',
    })
    isDeleted: boolean;
+
+   @CreateDateColumn({
+      name: 'created_at',
+      type: 'timestamptz',
+   })
+   createdAt: Date;
 
    // ----------------------------------------------------------------------------------------------
    // Relations
