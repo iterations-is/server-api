@@ -28,6 +28,7 @@ import { mwCreateProjectGlobalRoles } from '@middlewares/secondary/global-roles.
 import { mwCreateProjectTags } from '@middlewares/secondary/tags.mw';
 import { mwCreateProjectIterations } from '@middlewares/secondary/iterations.mw';
 import { mwSearchProjects } from '@middlewares/api/projects/search.mw';
+import { mwGetProjectMetadata } from '@middlewares/api/project/metadata.mw';
 
 const express = require('express');
 const router = express.Router();
@@ -99,7 +100,7 @@ router.delete('/project/:id_project', permissions(['project.remove']), mwDeleteP
 
 // Metadata
 // -----------------------------------------------------------------------------
-router.get('/project/:id_project/metadata', permissions(['project_metadata.get']), mwEmpty);
+router.get('/project/:id_project/metadata', mwGetProjectMetadata);
 router.patch(
    '/project/:id_project/metadata/public',
    permissions(['project_metadata.public']),
