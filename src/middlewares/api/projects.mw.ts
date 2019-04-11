@@ -30,6 +30,7 @@ export const mwCreateProject = async (req, res, next) => {
 
          isSearchable: joi.boolean().required(),
          isPublic: joi.boolean().required(),
+         hasOpenVacancies: joi.boolean().required(),
 
          categoryId: joi.number().required(),
          roles: joi
@@ -117,6 +118,7 @@ export const mwCreateProject = async (req, res, next) => {
    project.descriptionPrivate = req.body.descriptionPrivate;
    project.isArchived = false;
    project.isDeleted = false;
+   project.hasOpenVacancies = req.body.hasOpenVacancies;
    project.isSearchable = req.body.isSearchable;
    project.isPublic = req.body.isPublic;
    project.category = category;

@@ -67,6 +67,12 @@ export class ProjectsModel {
    isPublic: boolean;
 
    @Column({
+      name: 'vacancies_state',
+      type: 'boolean',
+   })
+   hasOpenVacancies: boolean;
+
+   @Column({
       name: 'delete_state',
       type: 'boolean',
    })
