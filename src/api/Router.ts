@@ -27,6 +27,7 @@ import {
 import { mwCreateProjectGlobalRoles } from '@middlewares/secondary/global-roles.mw';
 import { mwCreateProjectTags } from '@middlewares/secondary/tags.mw';
 import { mwCreateProjectIterations } from '@middlewares/secondary/iterations.mw';
+import { mwSearchProjects } from '@middlewares/api/projects/search.mw';
 
 const express = require('express');
 const router = express.Router();
@@ -90,7 +91,7 @@ router.delete(
 
 // Search
 // -----------------------------------------------------------------------------
-router.post('/projects/search/search', permissions(['project_search.search_projects']), mwEmpty);
+router.post('/projects/search', permissions(['project_search.search_projects']), mwSearchProjects);
 
 // Project
 // -------------------------------------------------------------------------------------------------
