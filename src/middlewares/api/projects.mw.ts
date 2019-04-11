@@ -22,7 +22,54 @@ const joi = require('joi');
 export const mwCreateProject = async (req, res, next) => {
    // Request data validation
    const schemas = {
-      body: null,
+      body: joi.object().keys({
+         name: joi.string().required(),
+
+         descriptionPublic: joi.string().required(),
+         descriptionPrivate: joi.string().required(),
+
+         isSearchable: joi.boolean().required(),
+         isPublic: joi.boolean().required(),
+
+         categoryId: joi.number().required(),
+         roles: joi
+            .array()
+            .required()
+            .items(
+               joi.object().keys({
+                  name: joi.string().required(),
+                  capacity: joi.number().required(),
+               }),
+            ),
+
+         tags: joi
+            .array()
+            .required()
+            .items(joi.string()),
+
+         iterations: joi
+            .array()
+            .required()
+            .items(
+               joi.object().keys({
+                  title: joi.string().required(),
+                  deadline: joi.string().required(),
+
+                  tasks: joi
+                     .array()
+                     .required()
+                     .items(
+                        joi.object().keys({
+                           title: joi.string().required(),
+                           description: joi.string().required(),
+                           pointsMin: joi.number().required(),
+                           pointsMax: joi.number().required(),
+                        }),
+                     ),
+               }),
+            ),
+      }),
+
       params: null,
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
