@@ -11,8 +11,14 @@ import { mwDeleteNotification, mwPatchNotificationsRead } from '@middlewares/api
 import { mwGetUserNotifications } from '@middlewares/api/notifications.mw';
 import { mwCreateProject, mwCreateProjectTransaction } from '@middlewares/api/projects.mw';
 import { mwDeleteProject } from '@middlewares/api/project.mw';
-import { mwCreateProjectCategory, mwGetProjectCategories } from '@middlewares/api/categories.mw';
-import { mwDeleteProjectCategory, mwPatchProjectCategory } from '@middlewares/api/category.mw';
+import {
+   mwCreateProjectCategory,
+   mwGetProjectCategories,
+} from '@middlewares/api/projects/categories.mw';
+import {
+   mwDeleteProjectCategory,
+   mwPatchProjectCategory,
+} from '@middlewares/api/projects/category.mw';
 import {
    mwGetTokenPersistent,
    mwGetTokenTemporary,
