@@ -9,9 +9,10 @@ import { mwEmpty } from '@middlewares/api/empty.mw';
 import permissions from '@middlewares/permissions.mw';
 import { mwDeleteProject } from '@middlewares/api/project.mw';
 import {
-   mwGetProjectMetadata,
-   mwPatchProjectMetadataIsPublic,
-} from '@middlewares/api/project/metadata.mw';
+   mwGetProjectMetadata, mwPatchProjectMetadataArchive,
+   mwPatchProjectMetadataVisibility,
+   mwPatchProjectMetadataSearchability
+} from "@middlewares/api/project/metadata.mw";
 import { mwsStoreProjectPermissionsLevel } from '@middlewares/secondary/permissionsProject.mws';
 
 const express = require('express');
@@ -30,58 +31,78 @@ router.get(
    mwGetProjectMetadata,
 );
 router.patch(
-   '/metadata/public',
+   '/:id_project/metadata/public',
    permissions([]),
    mwsStoreProjectPermissionsLevel,
-   mwPatchProjectMetadataIsPublic,
 );
-router.patch('/metadata/private', permissions([]), mwEmpty);
-router.patch('/metadata/searchability', permissions([]), mwEmpty);
-router.patch('/metadata/visibility', permissions([]), mwEmpty);
-router.patch('/metadata/archivation', permissions([]), mwEmpty);
+router.patch(
+   '/:id_project/metadata/private',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwEmpty,
+);
+router.patch(
+   '/:id_project/metadata/searchability',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwPatchProjectMetadataSearchability,
+);
+router.patch(
+   '/:id_project/metadata/visibility',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwPatchProjectMetadataVisibility,
+
+);
+router.patch(
+   '/:id_project/metadata/archivation',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwPatchProjectMetadataArchive,
+);
 
 // Snapshots
 // -----------------------------------------------------------------------------
-router.get('/snapshots', permissions([]), mwEmpty);
-router.post('/snapshots', permissions([]), mwEmpty);
+router.get('/:id_project/snapshots', permissions([]), mwEmpty);
+router.post('/:id_project/snapshots', permissions([]), mwEmpty);
 
 // Snapshot
 // -----------------------------------------------------------------------------
-router.get('/snapshot/:id_snapshot', permissions([]), mwEmpty);
-router.post('/snapshot/:id_snapshot', permissions([]), mwEmpty);
-router.patch('/snapshot/:id_snapshot', permissions([]), mwEmpty);
+router.get('/:id_project/snapshot/:id_snapshot', permissions([]), mwEmpty);
+router.post('/:id_project/snapshot/:id_snapshot', permissions([]), mwEmpty);
+router.patch('/:id_project/snapshot/:id_snapshot', permissions([]), mwEmpty);
 
 // Roles
 // -----------------------------------------------------------------------------
-router.get('/roles', permissions([]), mwEmpty);
-router.post('/roles', permissions([]), mwEmpty);
-router.patch('/roles/contributors', permissions([]), mwEmpty);
-router.patch('/roles/visitors', permissions([]), mwEmpty);
+router.get('/:id_project/roles', permissions([]), mwEmpty);
+router.post('/:id_project/roles', permissions([]), mwEmpty);
+router.patch('/:id_project/roles/contributors', permissions([]), mwEmpty);
+router.patch('/:id_project/roles/visitors', permissions([]), mwEmpty);
 
 // Role
 // -----------------------------------------------------------------------------
-router.patch('/role/:id_role', permissions([]), mwEmpty);
-router.delete('/role/:id_role', permissions([]), mwEmpty);
+router.patch('/:id_project/role/:id_role', permissions([]), mwEmpty);
+router.delete('/:id_project/role/:id_role', permissions([]), mwEmpty);
 
 // Team
 // -----------------------------------------------------------------------------
-router.get('/team', permissions([]), mwEmpty);
-router.post('/team', permissions([]), mwEmpty);
-router.delete('/team', permissions([]), mwEmpty);
+router.get('/:id_project/team', permissions([]), mwEmpty);
+router.post('/:id_project/team', permissions([]), mwEmpty);
+router.delete('/:id_project/team', permissions([]), mwEmpty);
 
 // User
 // ---------------------------------------------------------
-router.post('/team/user/:id_user', permissions([]), mwEmpty);
-router.patch('/team/user/:id_user', permissions([]), mwEmpty);
-router.delete('/team/user/:id_user', permissions([]), mwEmpty);
+router.post('/:id_project/team/user/:id_user', permissions([]), mwEmpty);
+router.patch('/:id_project/team/user/:id_user', permissions([]), mwEmpty);
+router.delete('/:id_project/team/user/:id_user', permissions([]), mwEmpty);
 
 // Iterations
 // -----------------------------------------------------------------------------
-router.get('/iterations', permissions([]), mwEmpty);
-router.post('/iterations', permissions([]), mwEmpty);
+router.get('/:id_project/iterations', permissions([]), mwEmpty);
+router.post('/:id_project/iterations', permissions([]), mwEmpty);
 
 // Iteration
 // -----------------------------------------------------------------------------
-router.use('/iteration/:id_iteration', routerProjectsIteration);
+router.use('/:id_project/iteration/:id_iteration', routerProjectsIteration);
 
 export default router;

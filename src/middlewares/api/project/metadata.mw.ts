@@ -9,7 +9,6 @@ import { getConnection } from '@utils/typeorm.util';
 import { ProjectsModel } from '@modelsSQL/Projects.model';
 import { meta, tags } from 'joi';
 import { response } from 'express';
-import { UsersModel } from '@modelsSQL/Users.model';
 import { ProjectRolesModel } from '@modelsSQL/ProjectRoles.model';
 
 const joi = require('joi');
@@ -78,22 +77,113 @@ export const mwGetProjectMetadata = async (req, res, next) => {
    return responseData(res, 200, 'Project metadata.', { public: metadataPublic });
 };
 
-export const mwPatchProjectMetadataIsPublic = async (req, res, next) => {
+export const mwPatchProjectMetadataVisibility = async (req, res, next) => {
+   // Request data validation
+   const schemas = {
+      body: null,
+      params: joi.object().keys({
+         id_project: joi
+            .number()
+            .min(0)
+            .required(),
+      }),
+   };
+   const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
+   if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
+
    const connection = getConnection();
    const repoProjects = connection.getRepository(ProjectsModel);
-   const repoUsers = connection.getRepository(UsersModel);
 
+   let project: ProjectsModel;
    try {
-      req.iterations.currentProjectModel = await repoProjects.findOneOrFail(req.params.id_project);
+      project = await repoProjects.findOneOrFail(req.params.id_project);
    } catch (e) {
       return responseData(res, 409, 'Cannot get project.', {});
    }
 
+   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
+
    try {
-      req.iterations.currentUserModel = await repoUsers.findOneOrFail(req.jwt.userId);
+      project.isPublic = !project.isPublic;
+      await repoProjects.save(project);
+      return responseData(res, 200, 'Project public status updated', {
+         isPublic: project.isPublic,
+      });
    } catch (e) {
-      return responseData(res, 409, 'Cannot get user.', {});
+      return responseSimple(res, 500, 'Cannot change project');
+   }
+};
+
+export const mwPatchProjectMetadataSearchability = async (req, res, next) => {
+   // Request data validation
+   const schemas = {
+      body: null,
+      params: joi.object().keys({
+         id_project: joi
+            .number()
+            .min(0)
+            .required(),
+      }),
+   };
+   const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
+   if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
+
+   const connection = getConnection();
+   const repoProjects = connection.getRepository(ProjectsModel);
+
+   let project: ProjectsModel;
+   try {
+      project = await repoProjects.findOneOrFail(req.params.id_project);
+   } catch (e) {
+      return responseData(res, 409, 'Cannot get project.', {});
    }
 
-   return responseSimple(res, 200, req.iterations.userProjectPermissionsLevel);
+   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
+
+   try {
+      project.isSearchable = !project.isSearchable;
+      await repoProjects.save(project);
+      return responseData(res, 200, 'Project searchability status updated', {
+         isPublic: project.isSearchable,
+      });
+   } catch (e) {
+      return responseSimple(res, 500, 'Cannot change project');
+   }
+};
+
+export const mwPatchProjectMetadataArchive = async (req, res, next) => {
+   // Request data validation
+   const schemas = {
+      body: null,
+      params: joi.object().keys({
+         id_project: joi
+            .number()
+            .min(0)
+            .required(),
+      }),
+   };
+   const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
+   if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
+
+   const connection = getConnection();
+   const repoProjects = connection.getRepository(ProjectsModel);
+
+   let project: ProjectsModel;
+   try {
+      project = await repoProjects.findOneOrFail(req.params.id_project);
+   } catch (e) {
+      return responseData(res, 409, 'Cannot get project.', {});
+   }
+
+   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
+
+   try {
+      project.isArchived = !project.isArchived;
+      await repoProjects.save(project);
+      return responseData(res, 200, 'Project archive status updated', {
+         isPublic: project.isArchived,
+      });
+   } catch (e) {
+      return responseSimple(res, 500, 'Cannot change project');
+   }
 };
