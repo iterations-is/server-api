@@ -37,8 +37,8 @@ passport.use(
          try {
             let user = await sqlRepoUser.findOneOrFail({
                where: {
-                  auth_id: responseId,
-                  auth_type: configOAuth.github.uniqueName,
+                  authId: responseId,
+                  authType: configOAuth.github.uniqueName,
                },
             });
 
@@ -53,7 +53,7 @@ passport.use(
                }
             }
 
-            done(null, user);
+            return done(null, user);
          } catch (e) {
             // User does not exist => registration
 
@@ -62,18 +62,18 @@ passport.use(
                .getRepository(GlobalRolesModel)
                .findOne({ where: { name: 'user' } });
 
-            let user = new UsersModel();
-            user.authId = responseId;
-            user.authType = configOAuth.github.uniqueName;
-            user.authUsername = `${responseUsername}-g${responseId}`;
-            user.authName = responseName;
-            user.role = role;
+            let userCreate = new UsersModel();
+            userCreate.authId = responseId;
+            userCreate.authType = configOAuth.github.uniqueName;
+            userCreate.authUsername = `${responseUsername}-g${responseId}`;
+            userCreate.authName = responseName;
+            userCreate.role = role;
 
             try {
-               await sqlRepoUser.save(user);
-               done(null, user);
+               await sqlRepoUser.save(userCreate);
+               return done(null, userCreate);
             } catch (e) {
-               done(null, false);
+               return done(null, false);
             }
          }
       },

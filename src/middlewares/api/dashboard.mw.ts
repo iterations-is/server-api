@@ -6,7 +6,7 @@
 import { getConnection } from '@utils/typeorm.util';
 import { GlobalRolesModel } from '@modelsSQL/GlobalRoles.model';
 import { UsersModel } from '@modelsSQL/Users.model';
-import { responseData, responseInvalidData, responseSimple } from '@utils/response.util';
+import { responseData, responseSimple } from '@utils/response.util';
 import { validateRequestJoi } from '@utils/validator.util';
 import { dbCreateNotifications } from '@utils/notifications.util';
 
