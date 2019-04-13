@@ -18,7 +18,13 @@ import {
    mwPatchProjectMetadataTags,
 } from '@middlewares/api/project/metadata.mw';
 import { mwsStoreProjectPermissionsLevel } from '@middlewares/secondary/permissionsProject.mws';
-import { mwCreateProjectRole, mwGetProjectRoles } from '@middlewares/api/project/roles.mw';
+import {
+   mwCreateProjectRole,
+   mwDeleteProjectRole,
+   mwGetProjectRoles,
+   mwPatchProjectFreeContributors,
+   mwUpdateProjectRole,
+} from '@middlewares/api/project/roles.mw';
 
 const express = require('express');
 const router = express.Router();
@@ -92,12 +98,27 @@ router.post(
    mwsStoreProjectPermissionsLevel,
    mwCreateProjectRole,
 );
-router.patch('/:id_project/roles/contributors', permissions([]), mwEmpty);
+router.patch(
+   '/:id_project/roles/contributors',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwPatchProjectFreeContributors,
+);
 
 // Role
 // -----------------------------------------------------------------------------
-router.patch('/:id_project/role/:id_role', permissions([]), mwEmpty);
-router.delete('/:id_project/role/:id_role', permissions([]), mwEmpty);
+router.patch(
+   '/:id_project/role/:id_role',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwUpdateProjectRole,
+);
+router.delete(
+   '/:id_project/role/:id_role',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwDeleteProjectRole,
+);
 
 // Team
 // -----------------------------------------------------------------------------
