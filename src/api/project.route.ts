@@ -9,10 +9,14 @@ import { mwEmpty } from '@middlewares/api/empty.mw';
 import permissions from '@middlewares/permissions.mw';
 import { mwDeleteProject } from '@middlewares/api/project.mw';
 import {
-   mwGetProjectMetadata, mwPatchProjectMetadataArchive,
+   mwGetProjectMetadata,
+   mwPatchProjectMetadataArchive,
    mwPatchProjectMetadataVisibility,
-   mwPatchProjectMetadataSearchability
-} from "@middlewares/api/project/metadata.mw";
+   mwPatchProjectMetadataSearchability,
+   mwPatchProjectMetadataPublic,
+   mwPatchProjectMetadataPrivate,
+   mwPatchProjectMetadataTags,
+} from '@middlewares/api/project/metadata.mw';
 import { mwsStoreProjectPermissionsLevel } from '@middlewares/secondary/permissionsProject.mws';
 
 const express = require('express');
@@ -34,12 +38,13 @@ router.patch(
    '/:id_project/metadata/public',
    permissions([]),
    mwsStoreProjectPermissionsLevel,
+   mwPatchProjectMetadataPublic,
 );
 router.patch(
    '/:id_project/metadata/private',
    permissions([]),
    mwsStoreProjectPermissionsLevel,
-   mwEmpty,
+   mwPatchProjectMetadataPrivate,
 );
 router.patch(
    '/:id_project/metadata/searchability',
@@ -52,13 +57,18 @@ router.patch(
    permissions([]),
    mwsStoreProjectPermissionsLevel,
    mwPatchProjectMetadataVisibility,
-
 );
 router.patch(
    '/:id_project/metadata/archivation',
    permissions([]),
    mwsStoreProjectPermissionsLevel,
    mwPatchProjectMetadataArchive,
+);
+router.patch(
+   '/:id_project/metadata/tags',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwPatchProjectMetadataTags,
 );
 
 // Snapshots
