@@ -38,9 +38,11 @@ import {
    mwUpdateProjectTask,
 } from '@middlewares/api/project/tasks.mw';
 import {
+   mwAssignUserToProjectTeam,
    mwGetProjectTeam,
    mwJoinProjectTeam,
    mwLeaveProjectTeam,
+   mwRemoveUserFromProjectTeam,
 } from '@middlewares/api/project/team.mw';
 
 const express = require('express');
@@ -139,13 +141,8 @@ router.delete(
 
 // Team
 // -----------------------------------------------------------------------------
-router.get('/:id_project/team', permissions([]), mwsStoreProjectPermissionsLevel, mwGetProjectTeam);
-router.post(
-   '/:id_project/team',
-   permissions([]),
-   mwsStoreProjectPermissionsLevel,
-   mwJoinProjectTeam,
-);
+router.get('/:id_project/team', permissions([]), mwGetProjectTeam);
+router.post('/:id_project/team', permissions([]), mwJoinProjectTeam);
 router.delete(
    '/:id_project/team',
    permissions([]),
@@ -155,9 +152,18 @@ router.delete(
 
 // User
 // ---------------------------------------------------------
-router.post('/:id_project/team/user/:id_user', permissions([]), mwEmpty);
-router.patch('/:id_project/team/user/:id_user', permissions([]), mwEmpty);
-router.delete('/:id_project/team/user/:id_user', permissions([]), mwEmpty);
+router.post(
+   '/:id_project/team/user',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwAssignUserToProjectTeam,
+);
+router.delete(
+   '/:id_project/team/user',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwRemoveUserFromProjectTeam,
+);
 
 // Iterations
 // -----------------------------------------------------------------------------

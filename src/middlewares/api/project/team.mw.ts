@@ -153,25 +153,32 @@ export const mwJoinProjectTeam = async (req, res, next) => {
    }
 
    // Check if user has role in project and remove if, if possible
-   for (let i = 0; i < user.projectRoles.length; ++i) {
-      for (let roleId of projectRolesIds) {
-         if (user.projectRoles[i].id === roleId) {
-            // User has role in the project
+   (() => {
+      for (let i = 0; i < user.projectRoles.length; ++i) {
+         for (let roleId of projectRolesIds) {
+            if (user.projectRoles[i].id === roleId) {
+               // User has role in the project
 
-            // Remove prev role
-            // Check if last leader
-            if (roleId === projectRoleLeaders.id) {
-               // Is a leader
-               // Last leader
-               if (projectRoleLeaders.users.length === 1) {
-                  return responseData(res, 400, 'You cannot change role, you are the last leader');
+               // Remove prev role
+               // Check if last leader
+               if (roleId === projectRoleLeaders.id) {
+                  // Is a leader
+                  // Last leader
+                  if (projectRoleLeaders.users.length === 1) {
+                     return responseData(
+                        res,
+                        400,
+                        'You cannot change role, you are the last leader',
+                     );
+                  }
                }
-            }
 
-            user.projectRoles.splice(i, 1);
+               user.projectRoles.splice(i, 1);
+               return;
+            }
          }
       }
-   }
+   })();
 
    // Add new role
    user.projectRoles.push(projectRole);
@@ -212,7 +219,6 @@ export const mwLeaveProjectTeam = async (req, res, next) => {
       return responseData(res, 404, 'Cannot find project.');
    }
 
-   if (project.isArchived) return responseData(res, 409, 'Project is archived.');
    if (!project.hasOpenVacancies) return responseData(res, 409, 'Project vacancies closed.');
 
    // Ger project roles ID
@@ -261,27 +267,35 @@ export const mwLeaveProjectTeam = async (req, res, next) => {
    }
 
    // Check if user has role in project and remove if, if possible
+
    let isRemoved = false;
-   for (let i = 0; i < user.projectRoles.length; ++i) {
-      for (let roleId of projectRolesIds) {
-         if (user.projectRoles[i].id === roleId) {
-            // User has role in the project
+   (() => {
+      for (let i = 0; i < user.projectRoles.length; ++i) {
+         for (let roleId of projectRolesIds) {
+            if (user.projectRoles[i].id === roleId) {
+               // User has role in the project
 
-            // Remove prev role
-            // Check if last leader
-            if (roleId === projectRoleLeaders.id) {
-               // Is a leader
-               // Last leader
-               if (projectRoleLeaders.users.length === 1) {
-                  return responseData(res, 400, 'You cannot change role, you are the last leader');
+               // Remove prev role
+               // Check if last leader
+               if (roleId === projectRoleLeaders.id) {
+                  // Is a leader
+                  // Last leader
+                  if (projectRoleLeaders.users.length === 1) {
+                     return responseData(
+                        res,
+                        400,
+                        'You cannot change role, you are the last leader',
+                     );
+                  }
                }
-            }
 
-            user.projectRoles.splice(i, 1);
-            isRemoved = true;
+               user.projectRoles.splice(i, 1);
+               isRemoved = true;
+               return;
+            }
          }
       }
-   }
+   })();
 
    if (!isRemoved) return responseData(res, 400, 'You are not a part of the team');
 
@@ -291,5 +305,218 @@ export const mwLeaveProjectTeam = async (req, res, next) => {
       return responseData(res, 200, 'You have left the project');
    } catch (e) {
       return responseData(res, 500, 'Cannot leave project');
+   }
+};
+
+export const mwAssignUserToProjectTeam = async (req, res, next) => {
+   // Request data validation
+   const schemas = {
+      body: joi.object().keys({
+         projectRoleId: joi
+            .number()
+            .min(0)
+            .required(),
+         username: joi.string().required(),
+      }),
+      params: joi.object().keys({
+         id_project: joi
+            .number()
+            .min(0)
+            .required(),
+      }),
+   };
+   const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
+   if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
+
+   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
+
+   const connection = getConnection();
+   const repoProjects = connection.getRepository(ProjectsModel);
+   const repoProjectRoles = connection.getRepository(ProjectRolesModel);
+
+   // Current user should be trusted
+   // ----------------------------------------------------------------------------------------------
+   const repoUsers = connection.getRepository(UsersModel);
+   try {
+      let userJwt = await repoUsers.findOneOrFail({
+         where: {
+            id: req.jwt.userId,
+         },
+         relations: ['role'],
+      });
+
+      if (!userJwt.role.isTrusted)
+         return responseSimple(res, 403, 'Forbidden. You are not an authority.');
+   } catch (e) {
+      return responseSimple(res, 409, 'Cannot find a user jwt.');
+   }
+
+   // Check project
+   // ----------------------------------------------------------------------------------------------
+   let project: ProjectsModel;
+   try {
+      project = await repoProjects.findOneOrFail(req.params.id_project);
+   } catch (e) {
+      return responseData(res, 404, 'Cannot find project.');
+   }
+
+   if (project.isArchived) return responseData(res, 409, 'Project is archived.');
+
+   // Get role
+   // ----------------------------------------------------------------------------------------------
+   let projectRole;
+   try {
+      projectRole = await repoProjectRoles.findOneOrFail({
+         where: {
+            id: req.body.projectRoleId,
+            project: project,
+         },
+      });
+   } catch (e) {
+      return responseData(res, 200, 'Project role does not exist');
+   }
+
+   // Get project roles ID
+   // ----------------------------------------------------------------------------------------------
+   let projectRoles;
+   try {
+      projectRoles = await repoProjectRoles.find({
+         where: {
+            project: project,
+         },
+         select: ['id'],
+      });
+   } catch (e) {}
+
+   let projectRolesIds = [];
+   projectRoles.forEach(role => {
+      projectRolesIds.push(role.id);
+   });
+
+   // Find user
+   // ----------------------------------------------------------------------------------------------
+   let user;
+   try {
+      user = await repoUsers.findOneOrFail({
+         where: {
+            authUsername: req.body.username,
+         },
+         relations: ['projectRoles'],
+      });
+   } catch (e) {
+      return responseSimple(res, 409, 'Cannot find a user to assign.');
+   }
+
+   // Check if user has role in project and remove if, if possible
+   (() => {
+      for (let i = 0; i < user.projectRoles.length; ++i) {
+         for (let roleId of projectRolesIds) {
+            if (user.projectRoles[i].id === roleId) {
+               // User has role in the project
+               user.projectRoles.splice(i, 1);
+               return;
+            }
+         }
+      }
+   })();
+
+   // Add new role
+   user.projectRoles.push(projectRole);
+
+   // Save new role
+   try {
+      await repoUsers.save(user);
+      return responseData(res, 200, 'You have assign user to project');
+   } catch (e) {
+      return responseData(res, 500, 'Cannot ad user to project');
+   }
+};
+
+export const mwRemoveUserFromProjectTeam = async (req, res, next) => {
+   // Request data validation
+   const schemas = {
+      body: joi.object().keys({
+         username: joi.string().required(),
+      }),
+      params: joi.object().keys({
+         id_project: joi
+            .number()
+            .min(0)
+            .required(),
+      }),
+   };
+   const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
+   if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
+
+   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
+
+   const connection = getConnection();
+   const repoProjects = connection.getRepository(ProjectsModel);
+   const repoProjectRoles = connection.getRepository(ProjectRolesModel);
+   const repoUsers = connection.getRepository(UsersModel);
+
+   // Check project
+   // ----------------------------------------------------------------------------------------------
+   let project: ProjectsModel;
+   try {
+      project = await repoProjects.findOneOrFail(req.params.id_project);
+   } catch (e) {
+      return responseData(res, 404, 'Cannot find project.');
+   }
+
+   if (project.isArchived) return responseData(res, 409, 'Project is archived.');
+
+   // Get project roles ID
+   // ----------------------------------------------------------------------------------------------
+   let projectRoles;
+   try {
+      projectRoles = await repoProjectRoles.find({
+         where: {
+            project: project,
+         },
+         select: ['id'],
+      });
+   } catch (e) {}
+
+   let projectRolesIds = [];
+   projectRoles.forEach(role => {
+      projectRolesIds.push(role.id);
+   });
+
+   // Find user
+   // ----------------------------------------------------------------------------------------------
+   let user;
+   try {
+      user = await repoUsers.findOneOrFail({
+         where: {
+            authUsername: req.body.username,
+         },
+         relations: ['projectRoles'],
+      });
+   } catch (e) {
+      return responseSimple(res, 409, 'Cannot find a user to remove.');
+   }
+
+   // Check if user has role in project and remove if, if possible
+
+   (() => {
+      for (let i = 0; i < user.projectRoles.length; ++i) {
+         for (let roleId of projectRolesIds) {
+            if (user.projectRoles[i].id === roleId) {
+               // User has role in the project
+
+               user.projectRoles.splice(i, 1);
+               return;
+            }
+         }
+      }
+   })();
+
+   // Save new role
+   try {
+      await repoUsers.save(user);
+      return responseData(res, 200, 'You have removed user from project');
+   } catch (e) {
+      return responseData(res, 500, 'Cannot remove user from project');
    }
 };
