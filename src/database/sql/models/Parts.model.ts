@@ -3,8 +3,19 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import {
+   Column,
+   Entity,
+   JoinColumn,
+   JoinTable,
+   ManyToMany,
+   ManyToOne,
+   OneToMany,
+   PrimaryGeneratedColumn,
+   Unique,
+} from 'typeorm';
 import { TasksModel } from './Tasks.model';
+import { ProjectsModel } from '@modelsSQL/Projects.model';
 
 @Entity({
    name: 'parts',
@@ -27,6 +38,19 @@ export class PartsModel {
    // ----------------------------------------------------------------------------------------------
    // Relations
    // ----------------------------------------------------------------------------------------------
+
+   // Parts belongs to project
+   // ----------------------------------------------------------------------------------------------
+   @Column({
+      name: 'fk__projects_id',
+   })
+   projectsId: number;
+
+   @ManyToOne(type => ProjectsModel, projects => projects.parts)
+   @JoinColumn({
+      name: 'fk__projects_id',
+   })
+   project: ProjectsModel;
 
    // PartsModel completes tasks
    // ----------------------------------------------------------------------------------------------

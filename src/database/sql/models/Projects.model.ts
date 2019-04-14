@@ -18,6 +18,7 @@ import { ProjectCategoriesModel } from './ProjectCategories.model';
 import { ProjectRolesModel } from './ProjectRoles.model';
 import { TagsModel } from './Tags.model';
 import { IterationsModel } from './Iterations.model';
+import { PartsModel } from '@modelsSQL/Parts.model';
 
 @Entity({
    name: 'projects',
@@ -121,4 +122,9 @@ export class ProjectsModel {
    // ----------------------------------------------------------------------------------------------
    @OneToMany(type => IterationsModel, iteration => iteration.project)
    iterations: IterationsModel[];
+
+   // Parts
+   // ----------------------------------------------------------------------------------------------
+   @OneToMany(type => PartsModel, part => part.project)
+   parts: PartsModel[];
 }
