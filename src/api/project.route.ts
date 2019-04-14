@@ -30,6 +30,13 @@ import {
    mwRemoveProjectIteration,
    mwUpdateProjectIteration,
 } from '@middlewares/api/project/iterations';
+import {
+   mwCreateProjectTask,
+   mwGetProjectTask,
+   mwGetProjectTasks,
+   mwRemoveProjectTask,
+   mwUpdateProjectTask,
+} from '@middlewares/api/project/tasks';
 
 const express = require('express');
 const router = express.Router();
@@ -175,13 +182,38 @@ router.delete(
 
 // Tasks
 // -----------------------------------------------------------------------------
-router.get('/:id_project/iteration/:id_iteration/tasks', permissions([]), mwEmpty);
-router.post('/:id_project/iteration/:id_iteration/tasks', permissions([]), mwEmpty);
+router.get(
+   '/:id_project/iteration/:id_iteration/tasks',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwGetProjectTasks,
+);
+router.post(
+   '/:id_project/iteration/:id_iteration/tasks',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwCreateProjectTask,
+);
 
 // Task
 // -----------------------------------------------------------------------------
-router.get('/:id_project/iteration/:id_iteration/task/:id_task', permissions([]), mwEmpty);
-router.patch('/:id_project/iteration/:id_iteration/task/:id_task', permissions([]), mwEmpty);
-router.delete('/:id_project/iteration/:id_iteration/task/:id_task', permissions([]), mwEmpty);
+router.get(
+   '/:id_project/iteration/:id_iteration/task/:id_task',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwGetProjectTask,
+);
+router.patch(
+   '/:id_project/iteration/:id_iteration/task/:id_task',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwUpdateProjectTask,
+);
+router.delete(
+   '/:id_project/iteration/:id_iteration/task/:id_task',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwRemoveProjectTask,
+);
 
 export default router;
