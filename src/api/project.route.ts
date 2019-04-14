@@ -29,14 +29,19 @@ import {
    mwGetProjectIterations,
    mwRemoveProjectIteration,
    mwUpdateProjectIteration,
-} from '@middlewares/api/project/iterations';
+} from '@middlewares/api/project/iterations.mw';
 import {
    mwCreateProjectTask,
    mwGetProjectTask,
    mwGetProjectTasks,
    mwRemoveProjectTask,
    mwUpdateProjectTask,
-} from '@middlewares/api/project/tasks';
+} from '@middlewares/api/project/tasks.mw';
+import {
+   mwGetProjectTeam,
+   mwJoinProjectTeam,
+   mwLeaveProjectTeam,
+} from '@middlewares/api/project/team.mw';
 
 const express = require('express');
 const router = express.Router();
@@ -134,9 +139,19 @@ router.delete(
 
 // Team
 // -----------------------------------------------------------------------------
-router.get('/:id_project/team', permissions([]), mwEmpty);
-router.post('/:id_project/team', permissions([]), mwEmpty);
-router.delete('/:id_project/team', permissions([]), mwEmpty);
+router.get('/:id_project/team', permissions([]), mwsStoreProjectPermissionsLevel, mwGetProjectTeam);
+router.post(
+   '/:id_project/team',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwJoinProjectTeam,
+);
+router.delete(
+   '/:id_project/team',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwLeaveProjectTeam,
+);
 
 // User
 // ---------------------------------------------------------
