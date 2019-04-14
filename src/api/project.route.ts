@@ -3,8 +3,6 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import routerProjectsIteration from './project.iteration.route';
-
 import { mwEmpty } from '@middlewares/api/empty.mw';
 import permissions from '@middlewares/permissions.mw';
 import { mwDeleteProject } from '@middlewares/api/project.mw';
@@ -25,6 +23,13 @@ import {
    mwPatchProjectFreeContributors,
    mwUpdateProjectRole,
 } from '@middlewares/api/project/roles.mw';
+import {
+   mwCreateProjectIterations,
+   mwGetProjectIteration,
+   mwGetProjectIterations,
+   mwRemoveProjectIteration,
+   mwUpdateProjectIteration,
+} from '@middlewares/api/project/iterations';
 
 const express = require('express');
 const router = express.Router();
@@ -134,11 +139,49 @@ router.delete('/:id_project/team/user/:id_user', permissions([]), mwEmpty);
 
 // Iterations
 // -----------------------------------------------------------------------------
-router.get('/:id_project/iterations', permissions([]), mwEmpty);
-router.post('/:id_project/iterations', permissions([]), mwEmpty);
+router.get(
+   '/:id_project/iterations',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwGetProjectIterations,
+);
+router.post(
+   '/:id_project/iterations',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwCreateProjectIterations,
+);
 
 // Iteration
 // -----------------------------------------------------------------------------
-router.use('/:id_project/iteration/:id_iteration', routerProjectsIteration);
+router.get(
+   '/:id_project/iteration/:id_iteration/',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwGetProjectIteration,
+);
+router.patch(
+   '/:id_project/iteration/:id_iteration/',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwUpdateProjectIteration,
+);
+router.delete(
+   '/:id_project/iteration/:id_iteration/',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwRemoveProjectIteration,
+);
+
+// Tasks
+// -----------------------------------------------------------------------------
+router.get('/:id_project/iteration/:id_iteration/tasks', permissions([]), mwEmpty);
+router.post('/:id_project/iteration/:id_iteration/tasks', permissions([]), mwEmpty);
+
+// Task
+// -----------------------------------------------------------------------------
+router.get('/:id_project/iteration/:id_iteration/task/:id_task', permissions([]), mwEmpty);
+router.patch('/:id_project/iteration/:id_iteration/task/:id_task', permissions([]), mwEmpty);
+router.delete('/:id_project/iteration/:id_iteration/task/:id_task', permissions([]), mwEmpty);
 
 export default router;
