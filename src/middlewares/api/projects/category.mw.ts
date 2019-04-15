@@ -48,9 +48,13 @@ export const mwPatchProjectCategory = async (req, res, next) => {
    }
 
    try {
+      const old = category.name;
       category.name = req.body.name;
       await repoProjectCategories.save(category);
-      return responseData(res, 200, 'Category was patched.', { name: req.body.name });
+      return responseData(res, 200, 'Category was patched.', {
+         oldName: old,
+         newName: category.name,
+      });
    } catch (e) {
       return responseSimple(res, 409, 'Cannot patch category.');
    }
@@ -77,33 +81,23 @@ export const mwDeleteProjectCategory = async (req, res, next) => {
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
 
    const connection = getConnection();
-   const repoProjects = connection.getRepository(ProjectsModel);
    const repoProjectCategories = connection.getRepository(ProjectCategoriesModel);
 
    let category;
    try {
-      category = await repoProjectCategories.findOneOrFail(req.params.id_ctegory);
+      category = await repoProjectCategories.findOneOrFail(req.params.id_category);
    } catch (e) {
       return responseSimple(res, 404, 'Not found.');
-   }
-
-   try {
-      const projectsInCategory = await repoProjects.find({
-         where: {
-            fk__categories_id: req.params.id_ctegory,
-         },
-      });
-
-      if (projectsInCategory.length !== 0)
-         return responseSimple(res, 409, 'Cannot remove category. At least one project uses it.');
-   } catch (e) {
-      return responseSimple(res, 500, 'Cannot remove project categories.');
    }
 
    try {
       await repoProjectCategories.remove(category);
       return responseSimple(res, 200, 'Project category was removed.');
    } catch (e) {
-      return responseSimple(res, 500, 'Cannot remove project categories.');
+      return responseSimple(
+         res,
+         500,
+         'Cannot remove project category. At least one project uses it.',
+      );
    }
 };

@@ -21,12 +21,14 @@ export class GradesModel {
 
    @Column({
       name: 'points',
+      nullable: true,
    })
    points: number;
 
    @Column({
       name: 'message',
       type: 'text',
+      nullable: true,
    })
    message: string;
 

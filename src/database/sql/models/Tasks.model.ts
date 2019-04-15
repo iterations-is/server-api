@@ -59,7 +59,7 @@ export class TasksModel {
    @Column({
       name: 'fk__iterations_id__belongs',
    })
-   iterations_id: number;
+   iterationsId: number;
 
    @ManyToOne(type => IterationsModel, iteration => iteration.tasks)
    @JoinColumn({

@@ -27,7 +27,7 @@ export class IterationsModel {
 
    @Column({
       name: 'deadline',
-      type: 'date',
+      type: 'timestamptz',
    })
    deadline: Date;
 

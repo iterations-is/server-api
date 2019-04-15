@@ -23,6 +23,7 @@ export class SnapshotsModel {
    @Column({
       name: 'date_graded',
       type: 'date',
+      nullable: true,
    })
    dateGraded: Date;
 
@@ -79,6 +80,7 @@ export class SnapshotsModel {
    // ----------------------------------------------------------------------------------------------
    @Column({
       name: 'fk__users_id__sent_by',
+      nullable: true,
    })
    sentByUserId: number;
 
@@ -92,6 +94,7 @@ export class SnapshotsModel {
    // ----------------------------------------------------------------------------------------------
    @Column({
       name: 'fk__users_id__graded_by',
+      nullable: true,
    })
    gradedByUserId: number;
 
