@@ -52,6 +52,14 @@ import {
    mwRemovePart,
    mwUpdatePart,
 } from '@middlewares/api/project/parts.mw';
+import {
+   mwCreateSnapshot,
+   mwGetAllSnapshots,
+   mwGetSnapshot,
+   mwGetSnapshotGrades,
+   mwGradeSnapshot,
+   mwSendSnapshotForGrading,
+} from '@middlewares/api/project/snapshots.mw';
 
 const express = require('express');
 const router = express.Router();
@@ -107,14 +115,49 @@ router.patch(
 
 // Snapshots
 // -----------------------------------------------------------------------------
-router.get('/:id_project/snapshots', permissions([]), mwEmpty);
-router.post('/:id_project/snapshots', permissions([]), mwEmpty);
+router.get(
+   '/:id_project/iteration/:id_iteration/snapshots/',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwGetAllSnapshots,
+);
+router.post(
+   '/:id_project/iteration/:id_iteration/snapshots',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwCreateSnapshot,
+);
 
 // Snapshot
 // -----------------------------------------------------------------------------
-router.get('/:id_project/snapshot/:id_snapshot', permissions([]), mwEmpty);
-router.post('/:id_project/snapshot/:id_snapshot', permissions([]), mwEmpty);
-router.patch('/:id_project/snapshot/:id_snapshot', permissions([]), mwEmpty);
+
+router.get(
+   '/:id_project/iteration/:id_iteration/snapshot/:id_snapshot',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwGetSnapshot,
+);
+router.post(
+   '/:id_project/iteration/:id_iteration/snapshot/:id_snapshot',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwSendSnapshotForGrading,
+);
+
+// Grades
+// -----------------------------------------------------------------------------
+router.get(
+   '/:id_project/iteration/:id_iteration/snapshot/:id_snapshot/grades',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwGetSnapshotGrades,
+);
+router.patch(
+   '/:id_project/iteration/:id_iteration/snapshot/:id_snapshot/grades',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwGradeSnapshot,
+);
 
 // Parts
 // -----------------------------------------------------------------------------
