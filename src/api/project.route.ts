@@ -48,6 +48,7 @@ import {
    mwCreatePart,
    mwGetPart,
    mwGetParts,
+   mwPartCompleteTasks,
    mwRemovePart,
    mwUpdatePart,
 } from '@middlewares/api/project/parts.mw';
@@ -139,6 +140,15 @@ router.delete(
    permissions([]),
    mwsStoreProjectPermissionsLevel,
    mwRemovePart,
+);
+
+// Part completes tasks
+// -----------------------------------------------------------------------------
+router.patch(
+   '/:id_project/part/:id_part/completes',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwPartCompleteTasks,
 );
 
 // Roles
