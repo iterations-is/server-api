@@ -30,20 +30,18 @@ export const mwGetParts = async (req, res, next) => {
    // TODO Permissions
 
    const connection = getConnection();
-   const repoProjects = connection.getRepository(ProjectsModel);
+   const repoParts = connection.getRepository(PartsModel);
 
    let parts;
    try {
-      let project = await repoProjects.findOneOrFail({
+      parts = await repoParts.find({
          where: {
-            id: req.params.id_project,
+            projectsId: req.params.id_project,
+            isSnapshotPart: false,
          },
-         relations: ['parts'],
       });
-
-      parts = project.parts;
    } catch (e) {
-      return responseData(res, 404, 'Project doesnt exist');
+      return responseData(res, 404, 'Parts dont exist');
    }
 
    for (let part of parts) {
@@ -175,4 +173,111 @@ export const mwGetPart = async (req, res, next) => {
    }
 
    return responseData(res, 200, 'Part', { part });
+};
+
+export const mwUpdatePart = async (req, res, next) => {
+   // Request data validation
+   const schemas = {
+      body: joi.object().keys({
+         interpreter: joi.string().required(),
+         store: joi.object(),
+      }),
+      params: joi.object().keys({
+         id_project: joi
+            .number()
+            .min(0)
+            .required(),
+         id_part: joi
+            .number()
+            .min(0)
+            .required(),
+      }),
+   };
+   const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
+   if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
+
+   // TODO Permissions
+
+   const connection = getConnection();
+   const repoParts = connection.getRepository(PartsModel);
+
+   let part;
+   try {
+      part = await repoParts.findOneOrFail({
+         where: {
+            id: req.params.id_part,
+            projectsId: req.params.id_project,
+            isSnapshotPart: false,
+         },
+      });
+   } catch (e) {
+      return responseData(res, 404, 'Part doesnt exist');
+   }
+
+   try {
+      let document = await DocumentsModel.findById(part.nosqlId).exec();
+
+      if (document === null)
+         return responseData(res, 200, 'Cannot find document', { id: part.nosqlId });
+
+      document.interpreter = req.body.interpreter;
+      document.store = req.body.store;
+
+      await document.save();
+
+      return responseData(res, 200, 'Part was saved', { document });
+   } catch (e) {
+      return responseData(res, 200, 'Cannot save part', {});
+   }
+};
+
+export const mwRemovePart = async (req, res, next) => {
+   // Request data validation
+   const schemas = {
+      body: null,
+      params: joi.object().keys({
+         id_project: joi
+            .number()
+            .min(0)
+            .required(),
+         id_part: joi
+            .number()
+            .min(0)
+            .required(),
+      }),
+   };
+   const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
+   if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
+
+   // TODO Permissions
+
+   const connection = getConnection();
+   const repoParts = connection.getRepository(PartsModel);
+
+   let part;
+   try {
+      part = await repoParts.findOneOrFail({
+         where: {
+            id: req.params.id_part,
+            projectsId: req.params.id_project,
+            isSnapshotPart: false,
+         },
+      });
+   } catch (e) {
+      return responseData(res, 404, 'Part doesnt exist');
+   }
+
+   // TODO remove part_completes_tasks
+
+   try {
+      await DocumentsModel.findOne({ _id: part.nosqlId })
+         .remove()
+         .exec();
+
+      await repoParts.remove(part);
+
+      return responseData(res, 200, 'Part was deleted');
+   } catch (e) {
+      return responseData(res, 200, 'Cannot delete part');
+   }
 };

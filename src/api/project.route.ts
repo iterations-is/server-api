@@ -44,7 +44,13 @@ import {
    mwLeaveProjectTeam,
    mwRemoveUserFromProjectTeam,
 } from '@middlewares/api/project/team.mw';
-import { mwCreatePart, mwGetPart, mwGetParts } from '@middlewares/api/project/parts.mw';
+import {
+   mwCreatePart,
+   mwGetPart,
+   mwGetParts,
+   mwRemovePart,
+   mwUpdatePart,
+} from '@middlewares/api/project/parts.mw';
 
 const express = require('express');
 const router = express.Router();
@@ -122,8 +128,18 @@ router.get(
    mwsStoreProjectPermissionsLevel,
    mwGetPart,
 );
-router.patch('/:id_project/part/:id_part', permissions([]), mwEmpty);
-router.delete('/:id_project/part/:id_part', permissions([]), mwEmpty);
+router.patch(
+   '/:id_project/part/:id_part',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwUpdatePart,
+);
+router.delete(
+   '/:id_project/part/:id_part',
+   permissions([]),
+   mwsStoreProjectPermissionsLevel,
+   mwRemovePart,
+);
 
 // Roles
 // -----------------------------------------------------------------------------
