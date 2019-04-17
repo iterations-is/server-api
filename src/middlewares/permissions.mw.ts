@@ -1,14 +1,26 @@
 /**
- * @file Global permissions middleware
- * @description Checks if user has required permissions
+ * @file Permissions middleware
+ * @description Check if user has required permissions
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  * @example
- * import permissions from '@middlewares/permissions.mw';
- * router.get('/path', permissions(['namespace.key_permission'], (req, res) => {}));
+ * import {
+ *    mwPermissionsGlobal,
+ *    mwPermissionsIsAuthority,
+ *    mwPermissionsProject,
+ *    UserProjectRole,
+ * } from '@middlewares/permissions.mw';
+ *
+ * router.get(
+ *    '/',
+ *    mwPermissionsGlobal(['namespace.key']),
+ *    mwPermissionsProject([UserProjectRole.LEADER]),
+ *    mwPermissionsIsAuthority,
+ *    mwEmpty,
+ * );
  */
 
 import { getConnection, getManager } from '@utils/typeorm.util';
-import { responseData, responseInvalidData, responseSimple } from '@utils/response.util';
+import { responseData, responseInvalidData } from '@utils/response.util';
 import { UsersModel } from '@modelsSQL/Users.model';
 
 export enum UserProjectRole {
@@ -103,6 +115,12 @@ export const mwPermissionsProject = (allowedRoles: UserProjectRole[]) => {
    };
 };
 
+/**
+ * Check if current user (from JWT) is an Authority
+ * @param req
+ * @param res
+ * @param next
+ */
 export const mwPermissionsIsAuthority = async (req, res, next) => {
    const connection = getConnection();
    const repoUsers = connection.getRepository(UsersModel);
