@@ -71,7 +71,7 @@ const router = express.Router();
 // -------------------------------------------------------------------------------------------------
 router.delete(
    '/',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['projects.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwDeleteProject,
 );
@@ -80,43 +80,43 @@ router.delete(
 // -----------------------------------------------------------------------------
 router.get(
    '/:id_project/metadata',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['metadata.get']),
    mwPermissionsProject([]),
    mwGetProjectMetadata,
 );
 router.patch(
    '/:id_project/metadata/public',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['metadata.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwPatchProjectMetadataPublic,
 );
 router.patch(
    '/:id_project/metadata/private',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['metadata.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwPatchProjectMetadataPrivate,
 );
 router.patch(
    '/:id_project/metadata/searchability',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['metadata.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwPatchProjectMetadataSearchability,
 );
 router.patch(
    '/:id_project/metadata/visibility',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['metadata.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwPatchProjectMetadataVisibility,
 );
 router.patch(
    '/:id_project/metadata/archivation',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['metadata.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwPatchProjectMetadataArchive,
 );
 router.patch(
    '/:id_project/metadata/tags',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['metadata.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwPatchProjectMetadataTags,
 );
@@ -125,29 +125,28 @@ router.patch(
 // -----------------------------------------------------------------------------
 router.get(
    '/:id_project/iteration/:id_iteration/snapshots/',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['snapshots.get']),
    mwPermissionsProject([]),
    mwGetAllSnapshots,
 );
 router.post(
    '/:id_project/iteration/:id_iteration/snapshots',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['snapshots.edit']),
    mwPermissionsProject([UserProjectRole.LEADER, UserProjectRole.CONTRIBUTOR]),
    mwCreateSnapshot,
 );
 
 // Snapshot
 // -----------------------------------------------------------------------------
-
 router.get(
    '/:id_project/iteration/:id_iteration/snapshot/:id_snapshot',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['snapshots.get']),
    mwPermissionsProject([]),
    mwGetSnapshot,
 );
 router.post(
    '/:id_project/iteration/:id_iteration/snapshot/:id_snapshot',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['snapshots.edit']),
    mwPermissionsProject([UserProjectRole.LEADER, UserProjectRole.CONTRIBUTOR]),
    mwSendSnapshotForGrading,
 );
@@ -156,13 +155,13 @@ router.post(
 // -----------------------------------------------------------------------------
 router.get(
    '/:id_project/iteration/:id_iteration/snapshot/:id_snapshot/grades',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['grades.get']),
    mwPermissionsProject([]),
    mwGetSnapshotGrades,
 );
 router.patch(
    '/:id_project/iteration/:id_iteration/snapshot/:id_snapshot/grades',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['grades.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwPermissionsIsAuthority,
    mwGradeSnapshot,
@@ -172,14 +171,14 @@ router.patch(
 // -----------------------------------------------------------------------------
 router.get(
    '/:id_project/parts',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['parts.get']),
    mwPermissionsProject([]),
    mwGetParts,
    //
 );
 router.post(
    '/:id_project/parts',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['parts.edit']),
    mwPermissionsProject([UserProjectRole.LEADER, UserProjectRole.CONTRIBUTOR]),
    mwCreatePart,
 );
@@ -188,19 +187,19 @@ router.post(
 // -----------------------------------------------------------------------------
 router.get(
    '/:id_project/part/:id_part',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['parts.get']),
    mwPermissionsProject([]),
    mwGetPart,
 );
 router.patch(
    '/:id_project/part/:id_part',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['parts.edit']),
    mwPermissionsProject([UserProjectRole.LEADER, UserProjectRole.CONTRIBUTOR]),
    mwUpdatePart,
 );
 router.delete(
    '/:id_project/part/:id_part',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['parts.edit']),
    mwPermissionsProject([UserProjectRole.LEADER, UserProjectRole.CONTRIBUTOR]),
    mwRemovePart,
 );
@@ -209,7 +208,7 @@ router.delete(
 // -----------------------------------------------------------------------------
 router.patch(
    '/:id_project/part/:id_part/completes',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['parts.edit']),
    mwPermissionsProject([UserProjectRole.LEADER, UserProjectRole.CONTRIBUTOR]),
    mwPartCompleteTasks,
 );
@@ -218,20 +217,20 @@ router.patch(
 // -----------------------------------------------------------------------------
 router.get(
    '/:id_project/roles',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['contributors.get']),
    mwPermissionsProject([]),
    mwGetProjectRoles,
    //
 );
 router.post(
    '/:id_project/roles',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['contributors.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwCreateProjectRole,
 );
 router.patch(
    '/:id_project/roles/contributors',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['contributors.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwPatchProjectFreeContributors,
 );
@@ -240,13 +239,13 @@ router.patch(
 // -----------------------------------------------------------------------------
 router.patch(
    '/:id_project/role/:id_role',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['contributors.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwUpdateProjectRole,
 );
 router.delete(
    '/:id_project/role/:id_role',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['contributors.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwDeleteProjectRole,
 );
@@ -255,19 +254,19 @@ router.delete(
 // -----------------------------------------------------------------------------
 router.get(
    '/:id_project/team',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['team.get']),
    mwPermissionsProject([]),
    mwGetProjectTeam,
 );
 router.post(
    '/:id_project/team',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['team.join']),
    mwPermissionsProject([]),
    mwJoinProjectTeam,
 );
 router.delete(
    '/:id_project/team',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['team.leave']),
    mwPermissionsProject([
       UserProjectRole.LEADER,
       UserProjectRole.CONTRIBUTOR,
@@ -280,14 +279,14 @@ router.delete(
 // ---------------------------------------------------------
 router.post(
    '/:id_project/team/user',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['team.assign']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwPermissionsIsAuthority,
    mwAssignUserToProjectTeam,
 );
 router.delete(
    '/:id_project/team/user',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['team.remove']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwRemoveUserFromProjectTeam,
 );
@@ -296,13 +295,13 @@ router.delete(
 // -----------------------------------------------------------------------------
 router.get(
    '/:id_project/iterations',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['iterations.get']),
    mwPermissionsProject([]),
    mwGetProjectIterations,
 );
 router.post(
    '/:id_project/iterations',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['iterations.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwCreateProjectIterations,
 );
@@ -310,20 +309,20 @@ router.post(
 // Iteration
 // -----------------------------------------------------------------------------
 router.get(
-   '/:id_project/iteration/:id_iteration/',
-   mwPermissionsGlobal([]),
+   '/:id_project/iteration/:id_iteration',
+   mwPermissionsGlobal(['iterations.get']),
    mwPermissionsProject([]),
    mwGetProjectIteration,
 );
 router.patch(
-   '/:id_project/iteration/:id_iteration/',
-   mwPermissionsGlobal([]),
+   '/:id_project/iteration/:id_iteration',
+   mwPermissionsGlobal(['iterations.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwUpdateProjectIteration,
 );
 router.delete(
-   '/:id_project/iteration/:id_iteration/',
-   mwPermissionsGlobal([]),
+   '/:id_project/iteration/:id_iteration',
+   mwPermissionsGlobal(['iterations.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwRemoveProjectIteration,
 );
@@ -332,13 +331,13 @@ router.delete(
 // -----------------------------------------------------------------------------
 router.get(
    '/:id_project/iteration/:id_iteration/tasks',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['tasks.get']),
    mwPermissionsProject([]),
    mwGetProjectTasks,
 );
 router.post(
    '/:id_project/iteration/:id_iteration/tasks',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['tasks.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwCreateProjectTask,
 );
@@ -347,19 +346,19 @@ router.post(
 // -----------------------------------------------------------------------------
 router.get(
    '/:id_project/iteration/:id_iteration/task/:id_task',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['tasks.get']),
    mwPermissionsProject([]),
    mwGetProjectTask,
 );
 router.patch(
    '/:id_project/iteration/:id_iteration/task/:id_task',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['tasks.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwUpdateProjectTask,
 );
 router.delete(
    '/:id_project/iteration/:id_iteration/task/:id_task',
-   mwPermissionsGlobal([]),
+   mwPermissionsGlobal(['tasks.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwRemoveProjectTask,
 );

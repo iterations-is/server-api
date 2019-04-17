@@ -23,37 +23,92 @@ const router = express.Router();
 
 router.get('/orm', mwEmpty);
 
-// Dashboard
+// Global Roles
 // -------------------------------------------------------------------------------------------------
-router.get('/dashboard/roles', mwPermissionsGlobal([]), mwGetGlobalRoles);
-router.patch('/dashboard/role', mwPermissionsGlobal([]), mwPatchUserGlobalRole);
+router.get(
+   '/roles',
+   mwPermissionsGlobal(['global_roles.get']),
+   mwGetGlobalRoles,
+   //
+);
+router.patch(
+   '/role',
+   mwPermissionsGlobal(['global_roles.edit']),
+   mwPatchUserGlobalRole,
+   //
+);
 
 // Notifications
 // -------------------------------------------------------------------------------------------------
-router.get('/notifications', mwPermissionsGlobal([]), mwGetUserNotifications);
+router.get(
+   '/notifications',
+   mwPermissionsGlobal(['notifications.get']),
+   mwGetUserNotifications,
+   //
+);
 
 // Notification
 // -------------------------------------------------------------------------------------------------
-router.patch('/notification/:id_notification', mwPermissionsGlobal([]), mwPatchNotificationsRead);
-router.delete('/notification/:id_notification', mwPermissionsGlobal([]), mwDeleteNotification);
+router.patch(
+   '/notification/:id_notification',
+   mwPermissionsGlobal(['notifications.edit']),
+   mwPatchNotificationsRead,
+   //
+);
+router.delete(
+   '/notification/:id_notification',
+   mwPermissionsGlobal(['notifications.edit']),
+   mwDeleteNotification,
+   //
+);
 
 // Ping
 // -------------------------------------------------------------------------------------------------
-router.get('/ping/auth/with', mwPermissionsGlobal([]), mwPingWithAuth);
-router.get('/ping/auth/without', mwPermissionsGlobal([]), mwPingWithoutAuth);
+router.get(
+   '/ping/auth/with',
+   mwPingWithAuth,
+   //
+);
+router.get(
+   '/ping/auth/without',
+   mwPingWithoutAuth,
+   //
+);
 
 // Projects
 // -------------------------------------------------------------------------------------------------
-router.use('/projects', mwPermissionsGlobal([]), routerProjects);
+router.use(
+   '/projects',
+   mwPermissionsGlobal(['projects.manage']),
+   routerProjects,
+   //
+);
 
 // Project
 // -------------------------------------------------------------------------------------------------
-router.use('/project', mwPermissionsGlobal([]), routerProject);
+router.use(
+   '/project',
+   mwPermissionsGlobal(['projects.manage']),
+   routerProject,
+   //
+);
 
 // Token
 // -------------------------------------------------------------------------------------------------
-router.get('/token/temporary', mwPermissionsGlobal([]), mwGetTokenTemporary);
-router.get('/token/persistent', mwPermissionsGlobal([]), mwGetTokenPersistent);
-router.get('/token/verify', mwPermissionsGlobal([]), mwVerifyTokenPersistent);
+router.get(
+   '/token/temporary',
+   mwGetTokenTemporary,
+   //
+);
+router.get(
+   '/token/persistent',
+   mwGetTokenPersistent,
+   //
+);
+router.get(
+   '/token/verify',
+   mwVerifyTokenPersistent,
+   //
+);
 
 export default router;

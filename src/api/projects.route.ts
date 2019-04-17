@@ -20,20 +20,50 @@ const router = express.Router();
 
 // Projects
 // -------------------------------------------------------------------------------------------------
-router.post('/', mwPermissionsGlobal([]), mwCreateProject);
+router.post(
+   '/',
+   mwPermissionsGlobal(['projects.edit']),
+   mwCreateProject,
+   //
+);
 
 // Categories
 // -----------------------------------------------------------------------------
-router.get('/categories/', mwGetProjectCategories);
-router.post('/categories/', mwPermissionsGlobal([]), mwCreateProjectCategory);
+router.get(
+   '/categories/',
+   mwPermissionsGlobal(['categories.get']),
+   mwGetProjectCategories,
+   //
+);
+router.post(
+   '/categories/',
+   mwPermissionsGlobal(['categories.edit']),
+   mwCreateProjectCategory,
+   //
+);
 
 // Category
 // -----------------------------------------------------------------------------
-router.patch('/category/:id_category', mwPermissionsGlobal([]), mwPatchProjectCategory);
-router.delete('/category/:id_category', mwPermissionsGlobal([]), mwDeleteProjectCategory);
+router.patch(
+   '/category/:id_category',
+   mwPermissionsGlobal(['categories.edit']),
+   mwPatchProjectCategory,
+   //
+);
+router.delete(
+   '/category/:id_category',
+   mwPermissionsGlobal(['categories.edit']),
+   mwDeleteProjectCategory,
+   //
+);
 
 // Search
 // -----------------------------------------------------------------------------
-router.post('/search', mwPermissionsGlobal([]), mwSearchProjects);
+router.post(
+   '/search',
+   mwPermissionsGlobal(['search.get']),
+   mwSearchProjects,
+   //
+);
 
 export default router;
