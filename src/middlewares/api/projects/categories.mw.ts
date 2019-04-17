@@ -5,7 +5,7 @@
 
 import { getConnection } from '@utils/typeorm.util';
 import { ProjectCategoriesModel } from '@modelsSQL/ProjectCategories.model';
-import { responseData, responseInvalidData, responseSimple } from '@utils/response.util';
+import { responseData, responseSimple } from '@utils/response.util';
 import { validateRequestJoi } from '@utils/validator.util';
 
 const joi = require('joi');
@@ -21,7 +21,11 @@ export const mwGetProjectCategories = async (req, res, next) => {
    const repoProjectCategories = connection.getRepository(ProjectCategoriesModel);
 
    try {
-      const categories = await repoProjectCategories.find();
+      const categories = await repoProjectCategories.find({
+         order: {
+            id: 'ASC',
+         },
+      });
       return responseData(res, 200, 'Project categories.', { categories });
    } catch (e) {
       return responseSimple(res, 500, 'Cannot get project categories.');
@@ -57,7 +61,7 @@ export const mwCreateProjectCategory = async (req, res, next) => {
 
    try {
       await repoProjectCategories.save(category);
-      return responseData(res, 200, 'Category was created.', { name: category.name });
+      return responseData(res, 200, 'Category was created.', { category });
    } catch (e) {
       return responseData(res, 409, 'Cannot create category.', { name: category.name });
    }

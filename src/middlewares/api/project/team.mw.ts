@@ -91,7 +91,7 @@ export const mwJoinProjectTeam = async (req, res, next) => {
 
    // Check vacancy
    // ----------------------------------------------------------------------------------------------
-   let projectRole;
+   let projectRole: ProjectRolesModel;
    try {
       projectRole = await repoProjectRoles.findOneOrFail({
          where: {
@@ -104,8 +104,9 @@ export const mwJoinProjectTeam = async (req, res, next) => {
       return responseData(res, 200, 'Project role does not exist');
    }
 
-   if (projectRole.users.length >= projectRole.capacity)
-      return responseData(res, 400, 'No free vacancies.');
+   if (projectRole.name !== 'Leader' && projectRole.name !== 'Visitors')
+      if (projectRole.users.length >= projectRole.capacity)
+         return responseData(res, 400, 'No free vacancies.');
 
    // Ger project roles ID
    // ----------------------------------------------------------------------------------------------

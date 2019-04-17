@@ -33,6 +33,7 @@ export const mwGetProjectIterations = async (req, res, next) => {
          where: {
             projectsId: req.params.id_project,
          },
+         relations: ['tasks'],
       });
       return responseData(res, 200, 'Project iterations.', { iterations });
    } catch (e) {

@@ -56,7 +56,7 @@ export const mwGetAllSnapshots = async (req, res, next) => {
          where: {
             iterationsId: req.params.id_iteration,
          },
-         relations: ['state'],
+         relations: ['state', 'createdBy', 'sentBy', 'gradedBy'],
       });
 
       return responseData(res, 200, 'Snapshots', { snapshots });
@@ -87,7 +87,6 @@ export const mwCreateSnapshot = async (req, res, next) => {
 
    const connection = getConnection();
    const repoIterations = connection.getRepository(IterationsModel);
-   const repoSnapshots = connection.getRepository(SnapshotsModel);
 
    // Iteration
    // ----------------------------------------------------------------------------------------------
@@ -98,6 +97,7 @@ export const mwCreateSnapshot = async (req, res, next) => {
             id: req.params.id_iteration,
             projectsId: req.params.id_project,
          },
+         relations: ['tasks'],
       });
    } catch (e) {
       return responseData(res, 404, 'Cannot find iteration');
@@ -148,7 +148,6 @@ export const mwCreateSnapshot = async (req, res, next) => {
    const repoGrades = connection.getRepository(GradesModel);
 
    let partsIds = [];
-   let tasksForGrading: TasksModel[] = [];
    for (let partContainer of req.body.parts) {
       // Create doc
       let doc = new DocumentsModel({
@@ -158,7 +157,7 @@ export const mwCreateSnapshot = async (req, res, next) => {
       try {
          await doc.save();
       } catch (e) {
-         return responseData(res, 200, 'Cannot create part', { error: 'nosql' });
+         return responseData(res, 409, 'Cannot create part', { error: 'nosql' });
       }
 
       // Find tasks
@@ -167,9 +166,8 @@ export const mwCreateSnapshot = async (req, res, next) => {
          try {
             let task = await repoTasks.findOneOrFail(taskId);
             tasks.push(task);
-            tasksForGrading.push(task);
          } catch (e) {
-            return responseData(res, 200, 'Cannot find task');
+            return responseData(res, 409, 'Cannot find task');
          }
       }
 
@@ -184,7 +182,7 @@ export const mwCreateSnapshot = async (req, res, next) => {
          let savedPart = await repoParts.save(part);
          partsIds.push(savedPart.id);
       } catch (e) {
-         return responseData(res, 200, 'Cannot create part');
+         return responseData(res, 409, 'Cannot create part');
       }
    }
 
@@ -209,18 +207,8 @@ export const mwCreateSnapshot = async (req, res, next) => {
          await transactionalEntityManager.save(snapshot);
       });
 
-      // Create grades
-      const uniqueTasksForGrading = [];
-      const map = new Map();
-      for (const item of tasksForGrading) {
-         if (!map.has(item.id)) {
-            map.set(item.id, true);
-            uniqueTasksForGrading.push(item);
-         }
-      }
-
       let grades: GradesModel[] = [];
-      for (let uniqueTask of uniqueTasksForGrading) {
+      for (let uniqueTask of iteration.tasks) {
          let grade = new GradesModel();
          grade.message = null;
          grade.points = null;
@@ -280,7 +268,7 @@ export const mwGetSnapshot = async (req, res, next) => {
             id: req.params.id_snapshot,
             iterationsId: req.params.id_iteration,
          },
-         relations: ['state'],
+         relations: ['state', 'createdBy', 'sentBy', 'gradedBy', 'iteration'],
       });
 
       return responseData(res, 200, 'Snapshot', { snapshot });
@@ -369,10 +357,11 @@ export const mwSendSnapshotForGrading = async (req, res, next) => {
 
    snapshot.state = snapshotState;
    snapshot.sentBy = user;
+   snapshot.dateSent = new Date();
 
    try {
       await repoSnapshots.save(snapshot);
-      return responseSimple(res, 409, 'Snapshot was sent for grading..');
+      return responseSimple(res, 200, 'Snapshot was sent for grading..');
    } catch (e) {
       return responseSimple(res, 409, 'Cannot send snapshot for grading.');
    }
@@ -408,9 +397,10 @@ export const mwGetSnapshotGrades = async (req, res, next) => {
          where: {
             snapshotId: req.params.id_snapshot,
          },
+         relations: ['task'],
       });
 
-      return responseData(res, 409, 'Snapshot grades.', { grades });
+      return responseData(res, 200, 'Snapshot grades.', { grades });
    } catch (e) {
       return responseData(res, 409, 'Cannot take snapshot grades.');
    }
@@ -457,6 +447,21 @@ export const mwGradeSnapshot = async (req, res, next) => {
 
    const connection = getConnection();
    const repoGrades = connection.getRepository(GradesModel);
+   const repoSnapshot = connection.getRepository(SnapshotsModel);
+
+   // Find user
+   // ----------------------------------------------------------------------------------------------
+   const repoUsers = connection.getRepository(UsersModel);
+   let user;
+   try {
+      user = await repoUsers.findOneOrFail({
+         where: {
+            id: req.jwt.userId,
+         },
+      });
+   } catch (e) {
+      return responseSimple(res, 409, 'Cannot find a user.');
+   }
 
    try {
       for (const gradeItem of req.body.grades) {
@@ -467,7 +472,13 @@ export const mwGradeSnapshot = async (req, res, next) => {
          await repoGrades.save(grade);
       }
 
-      return responseData(res, 409, 'Graded.');
+      let snapshot = await repoSnapshot.findOneOrFail(req.params.id_snapshot);
+      snapshot.gradedBy = user;
+      snapshot.dateGraded = new Date();
+
+      await repoSnapshot.save(snapshot);
+
+      return responseData(res, 200, 'Graded.');
    } catch (e) {
       return responseData(res, 409, 'Cannot grade.');
    }
