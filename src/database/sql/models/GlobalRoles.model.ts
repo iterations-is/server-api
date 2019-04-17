@@ -35,10 +35,10 @@ export class GlobalRolesModel {
    name: string;
 
    @Column({
-      name: 'trusted_state',
+      name: 'authority_state',
       default: false,
    })
-   isTrusted: boolean;
+   isAuthority: boolean;
 
    // ----------------------------------------------------------------------------------------------
    // Relations

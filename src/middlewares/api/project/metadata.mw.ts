@@ -12,6 +12,7 @@ import { ProjectRolesModel } from '@modelsSQL/ProjectRoles.model';
 import { ProjectCategoriesModel } from '@modelsSQL/ProjectCategories.model';
 import { TagsModel } from '@modelsSQL/Tags.model';
 import logger from '@utils/logger.util';
+import { UserProjectRole } from '@middlewares/permissions.mw';
 
 const joi = require('joi');
 
@@ -74,7 +75,8 @@ export const mwGetProjectMetadata = async (req, res, next) => {
       return responseData(res, 409, 'Cannot get metadata.', { e });
    }
 
-   if (req.project.permissions === 'nobody') delete metadataPublic.descriptionPrivate;
+   if (req.payload.userProjectRole === UserProjectRole.NOBODY)
+      delete metadataPublic.descriptionPrivate;
 
    return responseData(res, 200, 'Project metadata.', { public: metadataPublic });
 };
@@ -92,8 +94,6 @@ export const mwPatchProjectMetadataVisibility = async (req, res, next) => {
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
-
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
 
    const connection = getConnection();
    const repoProjects = connection.getRepository(ProjectsModel);
@@ -130,8 +130,6 @@ export const mwPatchProjectMetadataSearchability = async (req, res, next) => {
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
 
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
-
    const connection = getConnection();
    const repoProjects = connection.getRepository(ProjectsModel);
 
@@ -166,8 +164,6 @@ export const mwPatchProjectMetadataArchive = async (req, res, next) => {
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
-
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
 
    const connection = getConnection();
    const repoProjects = connection.getRepository(ProjectsModel);
@@ -207,8 +203,6 @@ export const mwPatchProjectMetadataPublic = async (req, res, next) => {
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
-
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
 
    const connection = getConnection();
    const repoCategory = connection.getRepository(ProjectCategoriesModel);
@@ -260,8 +254,6 @@ export const mwPatchProjectMetadataPrivate = async (req, res, next) => {
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
 
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
-
    const connection = getConnection();
    const repoProject = connection.getRepository(ProjectsModel);
 
@@ -304,8 +296,6 @@ export const mwPatchProjectMetadataTags = async (req, res, next) => {
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
-
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
 
    const connection = getConnection();
    const repoProject = connection.getRepository(ProjectsModel);

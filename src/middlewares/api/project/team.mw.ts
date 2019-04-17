@@ -329,8 +329,6 @@ export const mwAssignUserToProjectTeam = async (req, res, next) => {
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
 
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
-
    const connection = getConnection();
    const repoProjects = connection.getRepository(ProjectsModel);
    const repoProjectRoles = connection.getRepository(ProjectRolesModel);
@@ -346,7 +344,7 @@ export const mwAssignUserToProjectTeam = async (req, res, next) => {
          relations: ['role'],
       });
 
-      if (!userJwt.role.isTrusted)
+      if (!userJwt.role.isAuthority)
          return responseSimple(res, 403, 'Forbidden. You are not an authority.');
    } catch (e) {
       return responseSimple(res, 409, 'Cannot find a user jwt.');
@@ -448,8 +446,6 @@ export const mwRemoveUserFromProjectTeam = async (req, res, next) => {
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
-
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
 
    const connection = getConnection();
    const repoProjects = connection.getRepository(ProjectsModel);
