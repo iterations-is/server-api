@@ -128,16 +128,29 @@ export const mwCreateProject = async (req, res, next) => {
 
    // Create project roles
    // ----------------------------------------------------------------------------------------------
+   let roles: ProjectRolesModel[] = [];
+
    const roleLeaders = new ProjectRolesModel();
    roleLeaders.name = 'Leader';
    roleLeaders.isEditable = false;
    roleLeaders.project = project;
    roleLeaders.users = [user];
+   roles.push(roleLeaders);
 
    const roleVisitors = new ProjectRolesModel();
    roleVisitors.name = 'Visitors';
    roleVisitors.isEditable = false;
    roleVisitors.project = project;
+   roles.push(roleVisitors);
+
+   for (const rolePrototype of req.body.roles) {
+      const role = new ProjectRolesModel();
+      role.name = rolePrototype.name;
+      role.capacity = rolePrototype.capacity;
+      role.isEditable = true;
+      role.project = project;
+      roles.push(role);
+   }
 
    // Create tags
    // ----------------------------------------------------------------------------------------------
@@ -210,8 +223,7 @@ export const mwCreateProject = async (req, res, next) => {
          // Project
          await transactionalEntityManager.save(project);
          // Roles
-         await transactionalEntityManager.save(roleLeaders);
-         await transactionalEntityManager.save(roleVisitors);
+         await transactionalEntityManager.save(roles);
          // Iterations
          await transactionalEntityManager.save(iterations);
          // Tasks
