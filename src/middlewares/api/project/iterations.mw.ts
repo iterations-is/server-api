@@ -32,6 +32,9 @@ export const mwGetProjectIterations = async (req, res, next) => {
             projectsId: req.params.id_project,
          },
          relations: ['tasks'],
+         order: {
+            id: 'ASC',
+         },
       });
       return responseData(res, 200, 'Project iterations.', { iterations });
    } catch (e) {
@@ -109,6 +112,7 @@ export const mwGetProjectIteration = async (req, res, next) => {
             id: req.params.id_iteration,
             projectsId: req.params.id_project,
          },
+         relations: ['tasks'],
       });
       return responseData(res, 200, 'Project iteration.', { iteration });
    } catch (e) {

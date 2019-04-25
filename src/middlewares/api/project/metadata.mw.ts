@@ -31,11 +31,11 @@ export const mwGetProjectMetadata = async (req, res, next) => {
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
 
    const connection = getConnection();
-   const repoProjectCategories = connection.getRepository(ProjectsModel);
+   const repoProject = connection.getRepository(ProjectsModel);
 
    let metadataPublic;
    try {
-      metadataPublic = await repoProjectCategories.findOneOrFail(req.params.id_project, {
+      metadataPublic = await repoProject.findOneOrFail(req.params.id_project, {
          // select: [
          //    'id',
          //    'name',
@@ -78,7 +78,28 @@ export const mwGetProjectMetadata = async (req, res, next) => {
    if (req.payload.userProjectRole === UserProjectRole.NOBODY)
       delete metadataPublic.descriptionPrivate;
 
-   return responseData(res, 200, 'Project metadata.', { public: metadataPublic });
+   //
+   let projectIsVerified = false;
+   try {
+      const response = await repoProject
+         .createQueryBuilder('project')
+         .leftJoinAndSelect('project.roles', 'roles')
+         .leftJoinAndSelect('roles.users', 'users')
+         .leftJoinAndSelect('users.role', 'globalRole')
+         .where('project.id = :id AND roles.name = :name AND globalRole.isAuthority = :authority', {
+            id: req.params.id_project,
+            name: 'Leader',
+            authority: true,
+         })
+         .getOne();
+
+      projectIsVerified = response['roles'][0]['users'].length > 0;
+   } catch (e) {}
+
+   metadataPublic.verified = projectIsVerified;
+   metadataPublic.currentUserProjectRole = req.payload.userProjectRole;
+
+   return responseData(res, 200, 'Project metadata.', metadataPublic);
 };
 
 export const mwPatchProjectMetadataVisibility = async (req, res, next) => {
@@ -356,4 +377,27 @@ export const mwPatchProjectMetadataTags = async (req, res, next) => {
    } catch (e) {
       return responseData(res, 400, 'Cannot save project tags', {});
    }
+};
+
+export const mwGetProjectTrustedState = async (req, res, next) => {
+   // Request data validation
+   const schemas = {
+      body: joi.object().keys({
+         tags: joi
+            .array()
+            .required()
+            .items(joi.string()),
+      }),
+      params: joi.object().keys({
+         id_project: joi
+            .number()
+            .min(0)
+            .required(),
+      }),
+   };
+   const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
+   if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
+
+   const connection = getConnection();
+   const repoProject = connection.getRepository(ProjectsModel);
 };

@@ -17,6 +17,7 @@ import {
 import routerProject from './project.route';
 import routerProjects from './projects.route';
 import { mwEmpty } from '@middlewares/api/empty.mw';
+import { mwGetInterpreters } from '@middlewares/api/interpreters.mw';
 
 const express = require('express');
 const router = express.Router();
@@ -108,6 +109,14 @@ router.get(
 router.get(
    '/token/verify',
    mwVerifyTokenPersistent,
+   //
+);
+
+// Token
+// -------------------------------------------------------------------------------------------------
+router.get(
+   '/interpreters',
+   mwGetInterpreters,
    //
 );
 

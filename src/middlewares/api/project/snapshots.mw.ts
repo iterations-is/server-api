@@ -40,6 +40,7 @@ export const mwGetAllSnapshots = async (req, res, next) => {
    const repoIterations = connection.getRepository(IterationsModel);
    const repoSnapshots = connection.getRepository(SnapshotsModel);
 
+   // Check if iteration exists
    try {
       await repoIterations.findOneOrFail({
          where: {
@@ -51,12 +52,16 @@ export const mwGetAllSnapshots = async (req, res, next) => {
       return responseData(res, 404, 'Cannot find iteration');
    }
 
+   // Get snapshots
    try {
       let snapshots = await repoSnapshots.find({
          where: {
             iterationsId: req.params.id_iteration,
          },
          relations: ['state', 'createdBy', 'sentBy', 'gradedBy'],
+         order: {
+            id: 'ASC',
+         },
       });
 
       return responseData(res, 200, 'Snapshots', { snapshots });
@@ -219,7 +224,7 @@ export const mwCreateSnapshot = async (req, res, next) => {
 
       await repoGrades.save(grades);
 
-      return responseData(res, 200, 'Snapshot was created.', {});
+      return responseData(res, 200, 'Snapshot was created.', { id: snapshot.id });
    } catch (e) {
       return responseData(res, 409, 'Cannot create a snapshot.', { e });
    }
@@ -420,10 +425,7 @@ export const mwGradeSnapshot = async (req, res, next) => {
                   .string()
                   .min(0)
                   .required(),
-               points: joi
-                  .number()
-                  .min(0)
-                  .required(),
+               points: joi.number().required(),
             }),
          ),
       }),

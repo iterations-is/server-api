@@ -154,6 +154,7 @@ export const mwJoinProjectTeam = async (req, res, next) => {
    }
 
    // Check if user has role in project and remove if, if possible
+   let isEnd = false;
    (() => {
       for (let i = 0; i < user.projectRoles.length; ++i) {
          for (let roleId of projectRolesIds) {
@@ -166,11 +167,8 @@ export const mwJoinProjectTeam = async (req, res, next) => {
                   // Is a leader
                   // Last leader
                   if (projectRoleLeaders.users.length === 1) {
-                     return responseData(
-                        res,
-                        400,
-                        'You cannot change role, you are the last leader',
-                     );
+                     isEnd = true;
+                     return;
                   }
                }
 
@@ -180,6 +178,8 @@ export const mwJoinProjectTeam = async (req, res, next) => {
          }
       }
    })();
+
+   if (isEnd) return responseData(res, 400, 'You cannot change role, you are the last leader');
 
    // Add new role
    user.projectRoles.push(projectRole);
@@ -270,6 +270,7 @@ export const mwLeaveProjectTeam = async (req, res, next) => {
    // Check if user has role in project and remove if, if possible
 
    let isRemoved = false;
+   let isEnd = false;
    (() => {
       for (let i = 0; i < user.projectRoles.length; ++i) {
          for (let roleId of projectRolesIds) {
@@ -282,11 +283,8 @@ export const mwLeaveProjectTeam = async (req, res, next) => {
                   // Is a leader
                   // Last leader
                   if (projectRoleLeaders.users.length === 1) {
-                     return responseData(
-                        res,
-                        400,
-                        'You cannot change role, you are the last leader',
-                     );
+                     isEnd = true;
+                     return;
                   }
                }
 
@@ -298,6 +296,7 @@ export const mwLeaveProjectTeam = async (req, res, next) => {
       }
    })();
 
+   if (isEnd) return responseData(res, 400, 'You cannot change role, you are the last leader');
    if (!isRemoved) return responseData(res, 400, 'You are not a part of the team');
 
    // Save new role
