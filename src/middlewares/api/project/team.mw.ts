@@ -91,7 +91,7 @@ export const mwJoinProjectTeam = async (req, res, next) => {
 
    // Check vacancy
    // ----------------------------------------------------------------------------------------------
-   let projectRole;
+   let projectRole: ProjectRolesModel;
    try {
       projectRole = await repoProjectRoles.findOneOrFail({
          where: {
@@ -104,8 +104,9 @@ export const mwJoinProjectTeam = async (req, res, next) => {
       return responseData(res, 200, 'Project role does not exist');
    }
 
-   if (projectRole.users.length >= projectRole.capacity)
-      return responseData(res, 400, 'No free vacancies.');
+   if (projectRole.name !== 'Leader' && projectRole.name !== 'Visitors')
+      if (projectRole.users.length >= projectRole.capacity)
+         return responseData(res, 400, 'No free vacancies.');
 
    // Ger project roles ID
    // ----------------------------------------------------------------------------------------------
@@ -153,6 +154,7 @@ export const mwJoinProjectTeam = async (req, res, next) => {
    }
 
    // Check if user has role in project and remove if, if possible
+   let isEnd = false;
    (() => {
       for (let i = 0; i < user.projectRoles.length; ++i) {
          for (let roleId of projectRolesIds) {
@@ -165,11 +167,8 @@ export const mwJoinProjectTeam = async (req, res, next) => {
                   // Is a leader
                   // Last leader
                   if (projectRoleLeaders.users.length === 1) {
-                     return responseData(
-                        res,
-                        400,
-                        'You cannot change role, you are the last leader',
-                     );
+                     isEnd = true;
+                     return;
                   }
                }
 
@@ -179,6 +178,8 @@ export const mwJoinProjectTeam = async (req, res, next) => {
          }
       }
    })();
+
+   if (isEnd) return responseData(res, 400, 'You cannot change role, you are the last leader');
 
    // Add new role
    user.projectRoles.push(projectRole);
@@ -269,6 +270,7 @@ export const mwLeaveProjectTeam = async (req, res, next) => {
    // Check if user has role in project and remove if, if possible
 
    let isRemoved = false;
+   let isEnd = false;
    (() => {
       for (let i = 0; i < user.projectRoles.length; ++i) {
          for (let roleId of projectRolesIds) {
@@ -281,11 +283,8 @@ export const mwLeaveProjectTeam = async (req, res, next) => {
                   // Is a leader
                   // Last leader
                   if (projectRoleLeaders.users.length === 1) {
-                     return responseData(
-                        res,
-                        400,
-                        'You cannot change role, you are the last leader',
-                     );
+                     isEnd = true;
+                     return;
                   }
                }
 
@@ -297,6 +296,7 @@ export const mwLeaveProjectTeam = async (req, res, next) => {
       }
    })();
 
+   if (isEnd) return responseData(res, 400, 'You cannot change role, you are the last leader');
    if (!isRemoved) return responseData(res, 400, 'You are not a part of the team');
 
    // Save new role
@@ -328,8 +328,6 @@ export const mwAssignUserToProjectTeam = async (req, res, next) => {
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
 
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
-
    const connection = getConnection();
    const repoProjects = connection.getRepository(ProjectsModel);
    const repoProjectRoles = connection.getRepository(ProjectRolesModel);
@@ -345,7 +343,7 @@ export const mwAssignUserToProjectTeam = async (req, res, next) => {
          relations: ['role'],
       });
 
-      if (!userJwt.role.isTrusted)
+      if (!userJwt.role.isAuthority)
          return responseSimple(res, 403, 'Forbidden. You are not an authority.');
    } catch (e) {
       return responseSimple(res, 409, 'Cannot find a user jwt.');
@@ -447,8 +445,6 @@ export const mwRemoveUserFromProjectTeam = async (req, res, next) => {
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
-
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
 
    const connection = getConnection();
    const repoProjects = connection.getRepository(ProjectsModel);

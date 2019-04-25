@@ -9,6 +9,7 @@
   "main": "app.ts",
   "license": "UNLICENSED",
   "dependencies": {
+    "axios": "^0.18.0",
     "cookie-session": "^1.3.3",
     "express": "^4.16.4",
     "joi": "^14.3.1",

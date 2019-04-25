@@ -28,8 +28,6 @@ export const mwGetProjectTasks = async (req, res, next) => {
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
 
-   if (req.project.permissions === 'nobody') return responseSimple(res, 403, 'Forbidden');
-
    const connection = getConnection();
    const repoTasks = connection.getRepository(TasksModel);
 
@@ -93,8 +91,6 @@ export const mwCreateProjectTask = async (req, res, next) => {
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
 
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
-
    const connection = getConnection();
    const repoIterations = connection.getRepository(IterationsModel);
    const repoTasks = connection.getRepository(TasksModel);
@@ -147,8 +143,6 @@ export const mwGetProjectTask = async (req, res, next) => {
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
-
-   if (req.project.permissions === 'nobody') return responseSimple(res, 403, 'Forbidden');
 
    const connection = getConnection();
    const repoIterations = connection.getRepository(IterationsModel);
@@ -209,8 +203,6 @@ export const mwUpdateProjectTask = async (req, res, next) => {
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
 
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
-
    const connection = getConnection();
    const repoIterations = connection.getRepository(IterationsModel);
 
@@ -263,8 +255,6 @@ export const mwRemoveProjectTask = async (req, res, next) => {
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
-
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
 
    const connection = getConnection();
    const repoIterations = connection.getRepository(IterationsModel);

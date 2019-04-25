@@ -3,7 +3,7 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import permissions from '@middlewares/permissions.mw';
+import { mwPermissionsGlobal } from '@middlewares/permissions.mw';
 import { mwGetGlobalRoles, mwPatchUserGlobalRole } from '@middlewares/api/dashboard.mw';
 import { mwPingWithAuth, mwPingWithoutAuth } from '@middlewares/api/ping.mw';
 import { mwDeleteNotification, mwPatchNotificationsRead } from '@middlewares/api/notification.mw';
@@ -16,41 +16,108 @@ import {
 
 import routerProject from './project.route';
 import routerProjects from './projects.route';
+import { mwEmpty } from '@middlewares/api/empty.mw';
+import { mwGetInterpreters } from '@middlewares/api/interpreters.mw';
 
 const express = require('express');
 const router = express.Router();
 
-// Dashboard
+router.get('/orm', mwEmpty);
+
+// Global Roles
 // -------------------------------------------------------------------------------------------------
-router.get('/dashboard/roles', permissions([]), mwGetGlobalRoles);
-router.patch('/dashboard/role', permissions([]), mwPatchUserGlobalRole);
+router.get(
+   '/roles',
+   mwPermissionsGlobal(['global_roles.get']),
+   mwGetGlobalRoles,
+   //
+);
+router.patch(
+   '/role',
+   mwPermissionsGlobal(['global_roles.edit']),
+   mwPatchUserGlobalRole,
+   //
+);
 
 // Notifications
 // -------------------------------------------------------------------------------------------------
-router.get('/notifications', permissions([]), mwGetUserNotifications);
+router.get(
+   '/notifications',
+   mwPermissionsGlobal(['notifications.get']),
+   mwGetUserNotifications,
+   //
+);
 
 // Notification
 // -------------------------------------------------------------------------------------------------
-router.patch('/notification/:id_notification', permissions([]), mwPatchNotificationsRead);
-router.delete('/notification/:id_notification', permissions([]), mwDeleteNotification);
+router.patch(
+   '/notification/:id_notification',
+   mwPermissionsGlobal(['notifications.edit']),
+   mwPatchNotificationsRead,
+   //
+);
+router.delete(
+   '/notification/:id_notification',
+   mwPermissionsGlobal(['notifications.edit']),
+   mwDeleteNotification,
+   //
+);
 
 // Ping
 // -------------------------------------------------------------------------------------------------
-router.get('/ping/auth/with', permissions([]), mwPingWithAuth);
-router.get('/ping/auth/without', permissions([]), mwPingWithoutAuth);
+router.get(
+   '/ping/auth/with',
+   mwPingWithAuth,
+   //
+);
+router.get(
+   '/ping/auth/without',
+   mwPingWithoutAuth,
+   //
+);
 
 // Projects
 // -------------------------------------------------------------------------------------------------
-router.use('/projects', permissions([]), routerProjects);
+router.use(
+   '/projects',
+   mwPermissionsGlobal(['projects.manage']),
+   routerProjects,
+   //
+);
 
 // Project
 // -------------------------------------------------------------------------------------------------
-router.use('/project', permissions([]), routerProject);
+router.use(
+   '/project',
+   mwPermissionsGlobal(['projects.manage']),
+   routerProject,
+   //
+);
 
 // Token
 // -------------------------------------------------------------------------------------------------
-router.get('/token/temporary', permissions([]), mwGetTokenTemporary);
-router.get('/token/persistent', permissions([]), mwGetTokenPersistent);
-router.get('/token/verify', permissions([]), mwVerifyTokenPersistent);
+router.get(
+   '/token/temporary',
+   mwGetTokenTemporary,
+   //
+);
+router.get(
+   '/token/persistent',
+   mwGetTokenPersistent,
+   //
+);
+router.get(
+   '/token/verify',
+   mwVerifyTokenPersistent,
+   //
+);
+
+// Token
+// -------------------------------------------------------------------------------------------------
+router.get(
+   '/interpreters',
+   mwGetInterpreters,
+   //
+);
 
 export default router;

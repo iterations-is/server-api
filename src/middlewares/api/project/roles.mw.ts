@@ -76,8 +76,6 @@ export const mwCreateProjectRole = async (req, res, next) => {
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
 
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
-
    const connection = getConnection();
    const repoProject = connection.getRepository(ProjectsModel);
 
@@ -120,8 +118,6 @@ export const mwPatchProjectFreeContributors = async (req, res, next) => {
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
-
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
 
    const connection = getConnection();
    const repoProjects = connection.getRepository(ProjectsModel);
@@ -171,8 +167,6 @@ export const mwUpdateProjectRole = async (req, res, next) => {
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
 
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
-
    const connection = getConnection();
    const repoProject = connection.getRepository(ProjectsModel);
 
@@ -215,8 +209,6 @@ export const mwDeleteProjectRole = async (req, res, next) => {
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
-
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
 
    const connection = getConnection();
    const repoProjectRoles = connection.getRepository(ProjectRolesModel);

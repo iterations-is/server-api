@@ -24,14 +24,16 @@ export const mwGetProjectIterations = async (req, res, next) => {
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
 
-   if (req.project.permissions === 'nobody') return responseSimple(res, 403, 'Forbidden');
-
    const connection = getConnection();
    const repoIterations = connection.getRepository(IterationsModel);
    try {
       let iterations = await repoIterations.find({
          where: {
             projectsId: req.params.id_project,
+         },
+         relations: ['tasks'],
+         order: {
+            id: 'ASC',
          },
       });
       return responseData(res, 200, 'Project iterations.', { iterations });
@@ -59,8 +61,6 @@ export const mwCreateProjectIterations = async (req, res, next) => {
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
-
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
 
    const connection = getConnection();
    const repoProject = connection.getRepository(ProjectsModel);
@@ -104,8 +104,6 @@ export const mwGetProjectIteration = async (req, res, next) => {
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
 
-   if (req.project.permissions === 'nobody') return responseSimple(res, 403, 'Forbidden');
-
    const connection = getConnection();
    const repoIterations = connection.getRepository(IterationsModel);
    try {
@@ -114,6 +112,7 @@ export const mwGetProjectIteration = async (req, res, next) => {
             id: req.params.id_iteration,
             projectsId: req.params.id_project,
          },
+         relations: ['tasks'],
       });
       return responseData(res, 200, 'Project iteration.', { iteration });
    } catch (e) {
@@ -144,8 +143,6 @@ export const mwUpdateProjectIteration = async (req, res, next) => {
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
-
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
 
    const connection = getConnection();
    const repoIterations = connection.getRepository(IterationsModel);
@@ -190,8 +187,6 @@ export const mwRemoveProjectIteration = async (req, res, next) => {
    };
    const { isValidRequest, verbose } = validateRequestJoi(schemas, req.body, req.params);
    if (!isValidRequest) return responseData(res, 422, 'Invalid data.', verbose);
-
-   if (req.project.permissions !== 'leader') return responseSimple(res, 403, 'Forbidden');
 
    const connection = getConnection();
    const repoIterations = connection.getRepository(IterationsModel);

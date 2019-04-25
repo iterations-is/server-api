@@ -3,7 +3,15 @@
  * @author Sergey Dunaevskiy (dunaevskiy) <sergey@dunaevskiy.eu>
  */
 
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+   Column,
+   CreateDateColumn,
+   Entity,
+   JoinColumn,
+   ManyToOne,
+   OneToMany,
+   PrimaryGeneratedColumn,
+} from 'typeorm';
 import { IterationsModel } from './Iterations.model';
 import { UsersModel } from './Users.model';
 import { SnapshotStatesModel } from './SnapshotStates.model';
@@ -22,10 +30,23 @@ export class SnapshotsModel {
 
    @Column({
       name: 'date_graded',
-      type: 'date',
+      type: 'timestamptz',
       nullable: true,
    })
    dateGraded: Date;
+
+   @CreateDateColumn({
+      name: 'date_created',
+      type: 'timestamptz',
+   })
+   dateCreated: Date;
+
+   @Column({
+      name: 'date_sent',
+      type: 'timestamptz',
+      nullable: true,
+   })
+   dateSent: Date;
 
    @Column({
       name: 'parts_list_json',
