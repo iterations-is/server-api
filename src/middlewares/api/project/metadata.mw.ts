@@ -165,7 +165,7 @@ export const mwPatchProjectMetadataSearchability = async (req, res, next) => {
       project.isSearchable = !project.isSearchable;
       await repoProjects.save(project);
       return responseData(res, 200, 'Project searchability status updated', {
-         isPublic: project.isSearchable,
+         isSearchable: project.isSearchable,
       });
    } catch (e) {
       return responseSimple(res, 500, 'Cannot change project');

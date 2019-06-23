@@ -70,7 +70,7 @@ const router = express.Router();
 // Project
 // -------------------------------------------------------------------------------------------------
 router.delete(
-   '/',
+   '/:id_project',
    mwPermissionsGlobal(['projects.edit']),
    mwPermissionsProject([UserProjectRole.LEADER]),
    mwDeleteProject,

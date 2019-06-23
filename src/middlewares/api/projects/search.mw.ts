@@ -6,6 +6,7 @@ import { getConnection } from '@utils/typeorm.util';
 import { ProjectsModel } from '@modelsSQL/Projects.model';
 import { validateRequestJoi } from '@utils/validator.util';
 import { responseData } from '@utils/response.util';
+import { UsersModel } from '@modelsSQL/Users.model';
 
 const joi = require('joi');
 
@@ -17,6 +18,7 @@ export const mwSearchProjects = async (req, res, next) => {
          isArchived: joi.boolean().optional(),
          isPublic: joi.boolean().optional(),
          hasOpenVacancies: joi.boolean().optional(),
+         onlyUserProjects: joi.boolean().optional(),
       }),
       params: null,
    };
@@ -25,6 +27,7 @@ export const mwSearchProjects = async (req, res, next) => {
 
    const connection = getConnection();
    const repoProjects = connection.getRepository(ProjectsModel);
+   const repoUsers = connection.getRepository(UsersModel);
 
    try {
       let where = {};
@@ -34,7 +37,28 @@ export const mwSearchProjects = async (req, res, next) => {
       if (req.body.hasOpenVacancies !== undefined)
          where['hasOpenVacancies'] = req.body.hasOpenVacancies;
 
-      const projects = await repoProjects.findAndCount({
+      if (req.body.onlyUserProjects === true) {
+         const user = await repoUsers
+            .createQueryBuilder('user')
+            .where({ id: req.jwt.userId })
+            .leftJoinAndSelect('user.projectRoles', 'projectRoles')
+            .leftJoinAndSelect('projectRoles.project', 'projects')
+            .leftJoinAndSelect('projects.category', 'category')
+            .leftJoinAndSelect('projects.tags', 'tags')
+            .getMany();
+
+         const projectRoles = user[0]['projectRoles'];
+         const projects = [];
+         for (let projectRole of projectRoles) {
+            if (!projectRole.project.isDeleted) {
+               projects.push(projectRole.project);
+            }
+         }
+
+         return responseData(res, 200, 'Found projects', { query: req.body, projects: [projects] });
+      }
+
+      const projectsGlobal = await repoProjects.findAndCount({
          where: {
             ...where,
             isSearchable: true,
@@ -52,6 +76,9 @@ export const mwSearchProjects = async (req, res, next) => {
          relations: ['tags', 'category'],
       });
 
-      return responseData(res, 200, 'Found projects', { query: req.body, projects });
+      return responseData(res, 200, 'Found projects', {
+         query: req.body,
+         projects: projectsGlobal,
+      });
    } catch (e) {}
 };

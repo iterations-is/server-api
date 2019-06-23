@@ -479,6 +479,19 @@ export const mwRemoveUserFromProjectTeam = async (req, res, next) => {
       projectRolesIds.push(role.id);
    });
 
+   // Get project leaders
+   // ----------------------------------------------------------------------------------------------
+   let projectRoleLeaders;
+   try {
+      projectRoleLeaders = await repoProjectRoles.findOneOrFail({
+         where: {
+            project: project,
+            name: 'Leader',
+         },
+         relations: ['users'],
+      });
+   } catch (e) {}
+
    // Find user
    // ----------------------------------------------------------------------------------------------
    let user;
@@ -495,18 +508,35 @@ export const mwRemoveUserFromProjectTeam = async (req, res, next) => {
 
    // Check if user has role in project and remove if, if possible
 
+   let isRemoved = false;
+   let isEnd = false;
    (() => {
       for (let i = 0; i < user.projectRoles.length; ++i) {
          for (let roleId of projectRolesIds) {
             if (user.projectRoles[i].id === roleId) {
                // User has role in the project
 
+               // Remove prev role
+               // Check if last leader
+               if (roleId === projectRoleLeaders.id) {
+                  // Is a leader
+                  // Last leader
+                  if (projectRoleLeaders.users.length === 1) {
+                     isEnd = true;
+                     return;
+                  }
+               }
+
                user.projectRoles.splice(i, 1);
+               isRemoved = true;
                return;
             }
          }
       }
    })();
+
+   if (isEnd) return responseData(res, 400, 'You cannot change role, you are the last leader');
+   if (!isRemoved) return responseData(res, 400, 'You are not a part of the team');
 
    // Save new role
    try {

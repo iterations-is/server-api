@@ -11,6 +11,7 @@ import { ProjectsModel } from '@modelsSQL/Projects.model';
 import DocumentsModel from '@modelsNoSQL/Documents.schema';
 import { PartsModel } from '@modelsSQL/Parts.model';
 import { TasksModel } from '@modelsSQL/Tasks.model';
+import { UserProjectRole } from '@middlewares/permissions.mw';
 
 const joi = require('joi');
 
@@ -32,6 +33,7 @@ export const mwGetParts = async (req, res, next) => {
 
    const connection = getConnection();
    const repoParts = connection.getRepository(PartsModel);
+   const repoProject = connection.getRepository(ProjectsModel);
 
    let parts;
    try {
@@ -51,16 +53,37 @@ export const mwGetParts = async (req, res, next) => {
          let document = await DocumentsModel.findById(part.nosqlId).exec();
 
          if (document === null)
-            return responseData(res, 200, 'Cannot find document', { id: part.nosqlId });
+            return responseData(res, 400, 'Cannot find document', { id: part.nosqlId });
 
          part['document'] = {
             interpreter: document.interpreter,
             store: document.store,
          };
       } catch (e) {
-         return responseData(res, 200, 'Unexpected error', {});
+         return responseData(res, 400, 'Unexpected error', {});
       }
    }
+
+   // Private content
+   let isPublicContent = true;
+   try {
+      let project = await repoProject.findOneOrFail({
+         where: {
+            id: req.params.id_project,
+         },
+         select: ['isPublic'],
+      });
+
+      isPublicContent = project.isPublic;
+   } catch (e) {
+      return responseData(res, 400, 'Unexpected error', {});
+   }
+
+   if (
+      req.payload.userProjectRole === UserProjectRole.NOBODY && // user is nobody
+      !isPublicContent
+   )
+      parts = [];
 
    return responseData(res, 200, 'Project parts', { parts });
 };

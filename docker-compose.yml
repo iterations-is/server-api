@@ -20,21 +20,20 @@ services:
          POSTGRES_USER: iterations
          POSTGRES_PASSWORD: pass
          POSTGRES_DB: iterations-dev
-
-   postgres-test:
-      image: postgres:alpine
-      ports:
-         - '5433:5432'
-      environment:
-         POSTGRES_USER: iterations
-         POSTGRES_PASSWORD: pass
-         POSTGRES_DB: iterations-test
-
-   postgres-prod:
-      image: postgres:alpine
-      ports:
-         - '5434:5432'
-      environment:
-         POSTGRES_USER: iterations
-         POSTGRES_PASSWORD: pass
-         POSTGRES_DB: iterations-prod
+#   postgres-test:
+#      image: postgres:alpine
+#      ports:
+#         - '5433:5432'
+#      environment:
+#         POSTGRES_USER: iterations
+#         POSTGRES_PASSWORD: pass
+#         POSTGRES_DB: iterations-test
+#
+#   postgres-prod:
+#      image: postgres:alpine
+#      ports:
+#         - '5434:5432'
+#      environment:
+#         POSTGRES_USER: iterations
+#         POSTGRES_PASSWORD: pass
+#         POSTGRES_DB: iterations-prod
