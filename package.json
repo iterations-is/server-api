@@ -19,7 +19,7 @@
     "passport-github2": "^0.1.11",
     "pg": "^7.9.0",
     "prettier": "^1.16.4",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "reflect-metadata": "^0.1.13",
     "ts-node": "^8.0.3",
     "tsconfig-paths": "^3.8.0",
